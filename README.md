@@ -41,7 +41,13 @@ Where:
 
 Note that you need to log out and in again to apply the new group membership.
 
-##### 4. Start the app manually:
+##### 4. Copy the default passwd file
+To prevent git from over-writing your password file every time you pull updates from the repository, the etc/passwd file has been added to .gitignore.  So you need to copy the default file after the first time you do a git clone.  All these things ideally need to be done with a package installer script:
+```shell
+cp -v etc/default.passwd etc/passwd
+```
+
+##### 5. Start the app manually:
 ```shell
 npm start
 ```
@@ -52,14 +58,14 @@ PORT=3456 npm start
 
 To start the app automatically, something like [PM2](http://pm2.keymetrics.io) can be used.
 
-##### 5. Test access on http://localhost:3000
+##### 6. Test access on http://localhost:3000
   If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a CLI web browser like Lynx or curl:
 ```shell
 curl http://localhost:3000
 ```
 You should see the front page of the app (or the raw HTML with curl).
 
-##### 6. Remote access:
+##### 7. Remote access:
 For security reasons (until this app is battle-hardened and has been scrutinized by the ZT community), it currently listens only on the looback interface.  It can be reverse proxied by something like Nginx, but it would be best to access over an SSH tunnel at this stage.
 
 ###### SSH tunnel from Linux / Unix / macOS client
