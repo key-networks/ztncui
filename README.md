@@ -33,11 +33,11 @@ npm install
 ##### 3. Allow access to /var/lib/zerotier-one/authtoken.secret
 The user running the ztncui app needs read access to authtoken.secret.  This can be achieved with:
 ```shell
-sudo usermod -aG zerotier-one <username>
+sudo usermod -aG zerotier-one username
 sudo chmod g+r /var/lib/zerotier-one/authtoken.secret
 ```
 Where:
-* <username> is the user running the ztncui app
+* username is the user running the ztncui app
 
 Note that you need to log out and in again to apply the new group membership.
 
