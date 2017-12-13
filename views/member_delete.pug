@@ -1,0 +1,28 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  if member.deleted
+    .alert.alert-success
+      strong #{member.name} (#{member.id}) was deleted
+    a.btn.btn-default(href='../../members' name='networks' role='button') Members
+
+  else
+    .alert.alert-info
+      strong.
+        Note: To undo a member deletion, just get the member to 
+        join the network again
+    form(method='POST' action='')
+      button.btn.btn-primary(type='submit', name='delete') Delete #{member.name} (#{member.id})
+      = ' '
+      a.btn.btn-default(href='/controller/network/' + network.nwid + '/members',
+                                          name='cancel', role='button') Cancel
+
+  if errors
+    ul
+      for err in errors
+        li!= err.msg

@@ -1,0 +1,22 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends users_layout
+
+block users_content
+  table.table.table-responsive.table-striped.table-hover
+    each user in users
+      tr
+        td(width='3%')
+          a(href='/users/' + user.name + '/delete')
+            i.glyphicon.glyphicon-trash
+        td(width='15%')
+          a(href='/users/' + user.name + '/password') #{user.name}
+        td(width='82%')
+          a(href='/users/' + user.name + '/password') set password
+
+    else
+      tr
+        td There are no users on this system

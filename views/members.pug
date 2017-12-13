@@ -1,0 +1,64 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  script.
+    $(function() {
+      $('.checkbox').on('click', function() {
+        $.post('', {id: this.value, auth: this.checked});
+      });
+    });
+
+    $(function() {
+      $('.text').on('change', function() {
+        $.post('', {id: this.name, name: this.value});
+      });
+    });
+
+  form(method='POST' action='')
+    table.table.table-responsive.table-striped.table-hover
+      tr
+        td(width='3%')
+          = ''
+        td(width='20%')
+          | Member name
+        td(width='10%')
+          | Member ID
+        td(width='10%')
+          | Authorized
+        td(width='57%')
+          | IP assignment
+      each member in members
+        tr
+          - let url = '/controller/network/' + network.nwid + '/member/' + member.id
+          td
+            a(href=url + '/delete')
+              i.glyphicon.glyphicon-trash
+          td
+            input.form-control.text(type='text' name=member.id value=member.name)
+          td
+            a(href=url) #{member.id}
+          td
+            input.checkbox(type='checkbox' name='authCheckBox' value=member.id checked=(member.authorized? true : false))
+          td
+            each ipAssignment in member.ipAssignments
+              each digit in ipAssignment
+                = digit
+              = ' '
+
+      else
+        .alert.alert-info
+          strong There are no members on this network - invite users to join #{network.nwid}
+
+    a.btn.btn-default(href='/controller/networks' name='networks' role='button') Networks
+    = ' '
+    a.btn.btn-default(href='' name='refresh' role='button') Refresh
+
+    if errors
+      ul
+        for err in errors
+          li!= err.msg

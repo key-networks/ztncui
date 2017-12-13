@@ -1,0 +1,32 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends users_layout
+
+block users_content
+  if user === null
+    .alert.alert-warning
+      strong No such user
+
+  else if self_delete === true
+    .alert.alert-danger
+      strong You may not delete yourself
+
+  else if deleted
+    .alert.alert-success
+      strong #{user.name} was deleted
+
+  else
+    .alert.alert-danger
+      strong Warning! Deleting a user cannot be undone
+    form(method='POST' action='')
+      button.btn.btn-danger(type='submit', name='delete' value='delete') Delete #{user.name}
+      = ' '
+      a.btn.btn-default(href='/users', name='cancel', role='button') Cancel
+
+  if errors
+    ul
+      for err in errors
+        li!= err.msg

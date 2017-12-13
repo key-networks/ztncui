@@ -1,0 +1,47 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends controller_layout
+
+block content
+  h1= title
+
+  if error
+    b #{error}
+  else
+
+    table.table.table-responsive.table-striped.table-hover
+      tr
+        td(width='3%')
+          = ''
+        td(width='20%')
+          | Network name
+        td(width='10%')
+          | Network ID
+        td(width='7%')
+          = ''
+        td(width='10%')
+          = ''
+        td(width='50%')
+          = ''
+      each network in networks
+        tr
+          td
+            a(href='/controller/network/' + network.nwid + '/delete')
+              i.glyphicon.glyphicon-trash
+          td
+            a(href='/controller/network/' + network.nwid + '/name') #{network.name}
+          td
+            = network.nwid
+          td
+            a(href='/controller/network/' + network.nwid) detail
+          td
+            a(href='/controller/network/' + network.nwid + '/easy') easy setup
+          td
+            a(href='/controller/network/' + network.nwid + '/members') members
+
+      else
+        tr
+          td There are no networks on this network controller

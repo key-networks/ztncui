@@ -1,0 +1,52 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  .row
+    .col-sm-12
+      table.table.table-responsive.table-striped.table-hover
+        tr
+          th
+          th IP range start
+          th IP range end
+          each ipAssignmentPool in network.ipAssignmentPools
+            tr
+              td(width='3%')
+                a(href='/controller/network/' + network.nwid + '/ipAssignmentPools/' + ipAssignmentPool.ipRangeStart + '/' + ipAssignmentPool.ipRangeEnd + '/delete')
+                  i.glyphicon.glyphicon-trash
+              td= ipAssignmentPool.ipRangeStart
+              td= ipAssignmentPool.ipRangeEnd
+
+  .row
+    .col-sm-12
+      h3 Add new IP Assignment Pool:
+
+  form(method='POST' action='/controller/network/' + network.nwid + '/ipAssignmentPools')
+    .form-group.row
+      .col-sm-2
+        label(for='ipRangeStart') IP range start:
+      .col-sm-12
+        input#ipRangeStart.form-control(type='text' name='ipRangeStart' placeholder='IP range start' value=(undefined===ipAssignmentPool? '' : ipAssignmentPool.ipRangeStart))
+
+    .form-group.row
+      .col-sm-2
+        label(for='ipRangeEnd') IP range end:
+      .col-sm-12
+        input#ipRangeEnd.form-control(type='text' name='ipRangeEnd' placeholder='IP range end' value=(undefined===ipAssignmentPool? '' : ipAssignmentPool.ipRangeEnd))
+
+    .form-group.row
+      .col-sm-12
+        button.btn.btn-primary(type='submit') Submit
+        = ' '
+        a.btn.btn-default(href='/controller/network/' + network.nwid name='cancel' role='button') Cancel
+
+  if errors
+    .row
+      .col-sm-12
+        ul
+          for err in errors
+            li!= err.msg

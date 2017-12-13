@@ -1,0 +1,52 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  .row
+    .col-sm-12
+      table.table.table-responsive.table-striped.table-hover
+        tr
+          th
+          th Target
+          th Gateway
+          each route in network.routes
+            tr
+              td(width='3%')
+                a(href='/controller/network/' + network.nwid + '/routes/' + route.target + '/delete')
+                  i.glyphicon.glyphicon-trash
+              td= route.target
+              td= route.via
+
+  .row
+    .col-sm-12
+      h3 Add new route:
+
+  form(method='POST' action='/controller/network/' + network.nwid + '/routes')
+    .form-group.row
+      .col-sm-2
+        label(for='target') Target:
+      .col-sm-12
+        input#target.form-control(type='text' name='target' placeholder='e.g. 10.11.12.0/24' value=(undefined===route? '' : route.target))
+
+    .form-group.row
+      .col-sm-2
+        label(for='via') Gateway:
+      .col-sm-12
+        input#via.form-control(type='text' name='via' placeholder='e.g. 172.16.2.1 or leave blank if the target is the ZT network' value=(undefined===route? '' : route.via))
+
+    .form-group.row
+      .col-sm-2
+        button.btn.btn-primary(type='submit') Submit
+        = ' '
+        a.btn.btn-default(href='/controller/network/' + network.nwid name='cancel' role='button') Cancel
+
+  if errors
+    .row
+      .col-sm-12
+        ul
+          for err in errors
+            li!= err.msg

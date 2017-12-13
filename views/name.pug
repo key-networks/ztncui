@@ -1,0 +1,28 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  form(method='POST' action='')
+
+    .form-group.row
+      .col-sm-2
+        label(for='name') Network name:
+      .col-sm-10
+        input#name.form-control(type='text' name='name' placeholder='New network name' value=(undefined===network.name? '' : network.name))
+
+    .form-group.row
+      .col-sm-12
+        button.btn.btn-primary(type='submit') Submit
+        = ' '
+        a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+
+    if errors
+      .row
+        .col-sm-12
+          ul
+            for err in errors
+              li!= err.msg

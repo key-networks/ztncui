@@ -1,0 +1,88 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  script.
+    function randomOctet() {
+      return Math.floor(Math.random() * 255);
+    }
+
+    function randomIPv4() {
+      const networkCIDR = document.getElementById('networkCIDR');
+      const CIDR = '10.' + randomOctet() + '.' + randomOctet() + '.0/24';
+      networkCIDR.value = CIDR;
+      CIDRtoPool(CIDR);
+    }
+
+    function int32toIPv4String(int32) {
+      let ipv4 = '';
+      ipv4 = ((int32 & 0xff000000)>>>24).toString();
+      ipv4 += '.' + ((int32 & 0x00ff0000)>>>16).toString();
+      ipv4 += '.' + ((int32 & 0x0000ff00)>>>8).toString();
+      ipv4 += '.' + (int32 & 0x000000ff).toString();
+      return ipv4;
+    }
+
+    function CIDRtoPool(CIDR) {
+      const [start, prefix] = CIDR.split('/');
+      if (undefined !== start && undefined !== prefix &&
+       prefix > 0 && prefix < 33 &&
+       /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(start)
+      ){
+        const host32 = ((1 << (32 - parseInt(prefix))) - 1) >>> 0;
+        const net = start.split('.').map(oct => {return parseInt(oct)});
+        let net32 = 0 >>> 0;
+        net32 = (net[0]<<24) + (net[1]<<16) + (net[2]<<8) + (net[3]);
+        net32 &= ~host32;
+        bcast32 = net32 + host32;
+        const networkCIDR = document.getElementById('networkCIDR');
+        const poolStart = document.getElementById('poolStart');
+        const poolEnd = document.getElementById('poolEnd');
+        networkCIDR.value = int32toIPv4String(net32) + '/' + prefix;
+        poolStart.value = int32toIPv4String(net32 + 1);  
+        poolEnd.value = int32toIPv4String(bcast32 - 1);
+      } else {
+        poolStart.value = 'Invalid network CIDR';
+        poolEnd.value = 'Invalid network CIDR';
+      }
+    }
+
+  if message
+    .alert.alert-info
+      strong= message
+
+  form(method='POST' action='')
+    .form-group
+      button.btn.btn-link.float-right(type='button' data-toggle='collapse' data-target='#help') Help
+      .collapse(id='help')
+        p Please note that this utility only supports IPv4 at this stage.
+        p Use the following button to automatically generate a random network address, otherwise fill in the network address CIDR manually and the IP assignment pool will be automatically calculated for you.  You can manually alter these calculated values.
+
+    .form-group
+      button.btn.btn-primary(id='genIPv4' type='button' onclick='randomIPv4()') Generate network address
+
+    .form-group
+      label(for='networkCIDR') Network address in CIDR notation
+      input#networkCIDR.form-control(type='text' name='networkCIDR' onchange='CIDRtoPool(this.value)' placeholder='e.g. 10.11.12.0/24' value=(undefined===network.routes[0]? '' : network.routes[0].target))
+
+    .form-group
+      label(for='poolStart') Start of IP assignment pool
+      input#poolStart.form-control(type='text' name='poolStart' placeholder='e.g. 10.11.12.1' value=(undefined===network.ipAssignmentPools[0]? '' : network.ipAssignmentPools[0].ipRangeStart))
+
+    .form-group
+      label(for='poolEnd') End of IP assignment pool
+      input#poolEnd.form-control(type='text' name='poolEnd' placeholder='e.g. 10.11.12.254' value=(undefined===network.ipAssignmentPools[0]? '' : network.ipAssignmentPools[0].ipRangeEnd))
+
+    .form-group(style='padding-top: 10px')
+      button.btn.btn-primary(type='submit') Submit
+      = ' '
+      a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+
+    if errors
+      ul
+        for err in errors
+          li!= err.msg

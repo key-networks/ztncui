@@ -1,0 +1,47 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends controller_layout
+
+block content
+  if error
+     b #{error}
+  else
+    h2
+      a(href= network.nwid + '/name') #{network.name}
+      |  (#{network.nwid}):
+    
+    - if (members !== undefined)
+      h3 Members
+      each value, key in members
+        .row
+          .col-sm-2
+            a(href= network.nwid + '/member/' + key) #{key}
+          .col-sm-10
+            | revision: #{value}
+
+    h3= title
+    each value, key in network
+      .row
+        .col-sm-2
+          a(href= network.nwid + '/' + key) #{key}:
+        .col-sm-10
+          - if ((!!value ) && (value.constructor == Object))
+              p {
+              each v2, k2 in value
+                p #{k2}: #{v2},
+              p }
+          - else if ((!!value ) && (value.constructor == Array))
+              p [
+              each elem in value
+                p {
+                each v2, k2 in elem
+                  p #{k2}: #{v2},
+                p },
+              p ]
+          - else
+              | #{value}
+
+    a.btn.btn-default(href='/controller/networks' name='networks' role='button') Networks

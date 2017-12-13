@@ -1,0 +1,44 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends login_layout
+
+block login_content
+
+  if error
+     b #{error}
+  else
+    .row
+      .col-sm-12
+        h1= title
+
+        if message
+          .alert.alert-info
+            strong= message
+
+    form.form-horizontal(method='POST' action='')
+      .form-group.row
+        .col-sm-2
+          label.control-label(for='username') Username:
+        .col-sm-10
+          .input-group
+            span.input-group-addon
+              i.glyphicon.glyphicon-user
+            input#username.form-control(type='text' name='username' placeholder='Enter your username')
+
+      .form-group.row
+        .col-sm-2
+          label.control-label(for='password') Password:
+        .col-sm-10
+          .input-group
+            span.input-group-addon
+              i.glyphicon.glyphicon-lock
+            input#password.form-control(type='password' name='password' placeholder='Enter your password')
+
+      .form-group.row
+        .col-sm-12
+          button.btn.btn-primary(type='submit') Login
+          = ' '
+          a.btn.btn-default(href='/' name='cancel' role='button') Cancel

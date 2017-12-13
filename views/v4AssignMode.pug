@@ -1,0 +1,29 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  p Let ZT assign IPv4 addresses?
+
+  form(method='POST' action='')
+    .radio
+      label
+        input(type='radio' name='zt' value='true' checked=network.v4AssignMode.zt)
+        | Yes
+    .radio
+      label
+        input(type='radio' name='zt' value='false' checked=!network.v4AssignMode.zt)
+        | No
+
+    .form-group(style='padding-top: 10px')
+      button.btn.btn-primary(type='submit') Submit
+      = ' '
+      a.btn.btn-default(href='/controller/network/' + network.nwid name='cancel' role='button') Cancel
+
+    if errors
+      ul
+        for err in errors
+          li!= err.msg

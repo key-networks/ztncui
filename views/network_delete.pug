@@ -1,0 +1,24 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  if network.deleted
+    .alert.alert-success
+      strong #{network.name} (#{network.nwid}) was deleted
+
+  else
+    .alert.alert-danger
+      strong Warning! Deleting a network cannot be undone
+    form(method='POST' action='')
+      button.btn.btn-danger(type='submit', name='delete') Delete #{network.name} (#{network.nwid})
+      = ' '
+      a.btn.btn-default(href='/controller/networks', name='cancel', role='button') Cancel
+
+  if errors
+    ul
+      for err in errors
+        li!= err.msg
