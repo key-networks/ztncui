@@ -5,16 +5,23 @@ ztncui is a web UI for a standalone [ZeroTier](https://zerotier.com) network con
 ## Getting Started
 
 ### Prerequisites
-ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v8 or higher.
+* ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v8 or higher.
 
-It requires [ZeroTier One](https://www.zerotier.com/download.shtml) to be installed on the same machine.  This will run as the network controller to establish ZeroTier networks.
+* ztncui uses argon2 for password hashing. Argon2 needs the following:
+  1. g++
+  2. node-gyp, which can be installed with:
+```shell
+sudo npm install -g node-gyp
+```
 
-ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.  It should be easy to modify for other platforms - please feed back if this is required.
+* ztncui requires [ZeroTier One](https://www.zerotier.com/download.shtml) to be installed on the same machine.  This will run as the network controller to establish ZeroTier networks.
+
+* ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.  It should be easy to modify for other platforms - please feed back if this is required.
 
 ### Installing
 ##### 1. Clone the repository on a machine running ZeroTier One:
 ```shell
-git clone https://github.com/key-networks/ztncui.git
+git clone https://github.com/key-networks/ztncui
 ```
 
 ##### 2. Install the [node.js](https://nodejs.org) packages:
@@ -23,19 +30,36 @@ cd ztncui
 npm install
 ```
 
-##### 3. Start the app manually:
+##### 3. Allow access to /var/lib/zerotier-one/authtoken.secret
+The user running the ztncui app needs read access to authtoken.secret.  This can be achieved with:
+```shell
+sudo usermod -aG zerotier-one <username>
+sudo chmod g+r /var/lib/zerotier-one/authtoken.secret
+```
+Where:
+* <username> is the user running the ztncui app
+
+Note that you need to log out and in again to apply the new group membership.
+
+##### 4. Start the app manually:
 ```shell
 npm start
 ```
+This will run the app on TCP port 3000 by default.  If port 3000 is already in use, you can specify a different port, e.g.:
+```shell
+PORT=3456 npm start
+```
 
-##### 4. Test access on http://localhost:3000
-  If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a CLI web browser like Lynx or wget or curl:
+To start the app automatically, something like [PM2](http://pm2.keymetrics.io) can be used.
+
+##### 5. Test access on http://localhost:3000
+  If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a CLI web browser like Lynx or curl:
 ```shell
 curl http://localhost:3000
 ```
 You should see the front page of the app (or the raw HTML with curl).
 
-##### 5. Remote access:
+##### 6. Remote access:
 For security reasons (until this app is battle-hardened and has been scrutinized by the ZT community), it currently listens only on the looback interface.  It can be reverse proxied by something like Nginx, but it would be best to access over an SSH tunnel at this stage.
 
 ###### SSH tunnel from Linux / Unix / macOS client
