@@ -9,7 +9,7 @@ const util = require('util');
 
 const readFile = util.promisify(fs.readFile);
 
-let _token = null;
+let _token = process.env.ZT_TOKEN;
 
 exports.get = async function() {
   if (_token) {

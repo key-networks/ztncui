@@ -8,6 +8,8 @@ const got = require('got');
 const ipaddr = require('ip-address');
 const token = require('./token');
 
+ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
+
 init_options = async function() {
   let tok = null;
 
@@ -31,7 +33,7 @@ get_zt_address = async function() {
   const options = await init_options();
 
   try {
-    const response = await got('localhost:9993/status', options);
+    const response = await got(ZT_ADDR + '/status', options);
     return response.body.address;
   } catch(err) {
     throw(err);
@@ -47,7 +49,7 @@ exports.network_list = async function() {
   let nwids = [];
 
   try {
-    const response = await got('localhost:9993/controller/network', options);
+    const response = await got(ZT_ADDR + '/controller/network', options);
     nwids = response.body;
   } catch(err) {
     throw(err);
@@ -55,7 +57,7 @@ exports.network_list = async function() {
 
   for (let nwid of nwids) {
     try {
-      const response = await got('localhost:9993/controller/network/'
+      const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
       network = (({name, nwid}) => ({name, nwid}))(response.body);
       networks.push(network);
@@ -70,7 +72,7 @@ network_detail = async function(nwid) {
   const options = await init_options();
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     return response.body;
   } catch(err) {
@@ -87,7 +89,7 @@ exports.network_create = async function(name) {
   const zt_address = await get_zt_address();
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                               + zt_address + '______', options);
     return response.body;
   } catch(err) {
@@ -100,7 +102,7 @@ exports.network_delete = async function(nwid) {
   options.method = 'DELETE';
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     response.body.deleted = true;
     return response.body;
@@ -129,7 +131,7 @@ exports.ipAssignmentPools = async function(nwid, ipAssignmentPool, action) {
 
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     return response.body;
   } catch(err) {
@@ -169,7 +171,7 @@ exports.routes = async function(nwid, route, action) {
 
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     return response.body;
   } catch(err) {
@@ -183,7 +185,7 @@ exports.network_object = async function(nwid, object) {
   options.body = object;
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     return response.body;
   } catch(err) {
@@ -195,7 +197,7 @@ exports.members = async function(nwid) {
   const options = await init_options();
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                   + nwid + '/member', options);
     return response.body;
   } catch(err) {
@@ -207,7 +209,7 @@ exports.member_detail = async function(nwid, id) {
   const options = await init_options();
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                             + nwid + '/member/' + id, options);
     return response.body;
   } catch(err) {
@@ -221,7 +223,7 @@ exports.member_object = async function(nwid, id, object) {
   options.body = object;
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                             + nwid + '/member/' + id, options);
     return response.body;
   } catch(err) {
@@ -234,7 +236,7 @@ exports.member_delete = async function(nwid, id) {
   options.method = 'DELETE';
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                             + nwid + '/member/' + id, options);
     response.body.deleted = true;
     return response.body;
@@ -257,7 +259,7 @@ exports.network_easy_setup = async function(nwid,
     };
 
   try {
-    const response = await got('localhost:9993/controller/network/'
+    const response = await got(ZT_ADDR + '/controller/network/'
                                                               + nwid, options);
     return response.body;
   } catch(err) {
