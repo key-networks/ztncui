@@ -56,16 +56,32 @@ This will run the app on TCP port 3000 by default.  If port 3000 is already in u
 PORT=3456 npm start
 ```
 
-To start the app automatically, something like [PM2](http://pm2.keymetrics.io) can be used.
+##### 6. Start the app automatically
+To start the app automatically, something like [PM2](http://pm2.keymetrics.io) can be used.  Install it with:
+```shell
+sudo npm install -g pm2
+```
 
-##### 6. Test access on http://localhost:3000
-  If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a CLI web browser like Lynx or curl:
+Add ztncui as a managed app with:
+```shell
+pm2 start bin/www --name ztncui
+```
+
+To detect the init system:
+```shell
+pm2 startup
+```
+
+PM2 will then give you a command to execute to configure pm2 startup for your system.
+
+##### 7. Test access on http://localhost:3000
+  If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a text web browser like Lynx or a CLI web browser like curl:
 ```shell
 curl http://localhost:3000
 ```
 You should see the front page of the app (or the raw HTML with curl).
 
-##### 7. Remote access:
+##### 8. Remote access:
 For security reasons (until this app is battle-hardened and has been scrutinized by the ZT community), it currently listens only on the looback interface.  It can be reverse proxied by something like Nginx, but it would be best to access over an SSH tunnel at this stage.
 
 ###### SSH tunnel from Linux / Unix / macOS client
@@ -88,7 +104,7 @@ Open PuTTY and configure as follows:
 2. Set **Source port** to 3333
 3. Set **Destination** to localhost:3000
 4. Click on the **Add** button.
-5. Go **Session** in the **Category** panel on the left.
+5. Go to **Session** in the **Category** panel on the left.
 6. Set **Host Name (or IP address)** to the FQDN of the machine running the ZT network controller and ztncui.
 7. Enter a name for the configuration in **Saved Sessions** and click **Save**.
 8. Click the **Open** button and log into the network controller machine.
