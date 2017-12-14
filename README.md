@@ -16,7 +16,7 @@ sudo npm install -g node-gyp
 
 * ztncui requires [ZeroTier One](https://www.zerotier.com/download.shtml) to be installed on the same machine.  This will run as the network controller to establish ZeroTier networks.
 
-* ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.  It should be easy to modify for other platforms - please feed back if this is required.
+* ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.  It should be easy to modify for other platforms - please feed back if this is required. (Edit: it should be easier to run on any platform now using a `.env` file - see below).
 
 ### Installing
 ##### 1. Clone the repository on a machine running ZeroTier One:
@@ -30,7 +30,11 @@ cd ztncui
 npm install
 ```
 
-##### 3. Allow access to /var/lib/zerotier-one/authtoken.secret
+##### 3. authtoken.secret
+
+The app needs to know the zerotier-one authtoken.secret.  Their are two options:
+
+###### A: Allow access to /var/lib/zerotier-one/authtoken.secret
 The user running the ztncui app needs read access to authtoken.secret.  This can be achieved with:
 ```shell
 sudo usermod -aG zerotier-one username
@@ -40,6 +44,27 @@ Where:
 * username is the user running the ztncui app
 
 Note that you need to log out and in again to apply the new group membership.
+
+###### OR
+###### B: Make a .env file
+In the root of the ztncui directory, create a `.env` file with the content:
+```
+ZT_TOKEN=########################
+```
+Where:
+* ######################## is the token string.
+
+You can also specify in the `.env` file a different address for the zerotier-one API (which defaults to localhost:9993):
+```
+ZT_ADDR=localhost:9995
+```
+
+Make `.env` readable by the user running ztncui only:
+```shell
+chmod 600 .env
+```
+
+The `.env` file should make it easier to run ztncui on a non-Linux platform.
 
 ##### 4. Copy the default passwd file
 To prevent git from over-writing your password file every time you pull updates from the repository, the etc/passwd file has been added to .gitignore.  So you need to copy the default file after the first time you do a git clone.  All these things ideally need to be done with a package installer script:
@@ -51,9 +76,9 @@ cp -v etc/default.passwd etc/passwd
 ```shell
 npm start
 ```
-This will run the app on TCP port 3000 by default.  If port 3000 is already in use, you can specify a different port, e.g.:
-```shell
-PORT=3456 npm start
+This will run the app on TCP port 3000 by default.  If port 3000 is already in use, you can specify a different port in the `.env` file (see 3B above), e.g.:
+```
+PORT=3456
 ```
 
 ##### 6. Start the app automatically

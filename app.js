@@ -4,6 +4,8 @@
   Licensed under GPLv3 - see LICENSE for details.
 */
 
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
