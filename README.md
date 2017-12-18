@@ -204,5 +204,8 @@ Certain properties for the member can be set by clicking on them - e.g.:
 ## Feedback
 Please give us your feedback... good, bad or ugly.  Constructive criticism is welcomed.  Please use the contact form at [key-networks.com](https://key-networks.com/) - Thanks :)
 
+## Bug and Vulnerability Reporting
+Problems with ztncui can be reported using the GitHub issue tracking system.  Please use the contact form at [key-networks.com](https://key-networks.com/) to privately report potential vulnerabilities.  Thank you.
+
 ## License
 The ztncui code is open source code, licensed under the GNU GPLv3, and is free to use on those terms. If you are interested in commercial licensing, please contact us via the contact form at [key-networks.com](https://key-networks.com) .
