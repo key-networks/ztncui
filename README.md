@@ -32,7 +32,7 @@ npm install
 
 ##### 3. authtoken.secret
 
-The app needs to know the zerotier-one authtoken.secret.  Their are two options:
+The app needs to know the zerotier-one authtoken.secret.  There are two options:
 
 ###### A: Allow access to /var/lib/zerotier-one/authtoken.secret
 The user running the ztncui app needs read access to authtoken.secret.  This can be achieved with:
