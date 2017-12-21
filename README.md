@@ -99,7 +99,12 @@ To detect the init system:
 pm2 startup
 ```
 
-PM2 will then give you a command to execute to configure pm2 startup for your system.
+PM2 will then give you a command to execute to configure automatic startup of PM2 for your system.
+
+Save the current PM2 process list so that ztncui will restart across reboots:
+```shell
+pm2 save
+```
 
 ##### 7. Test access on http://localhost:3000
   If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a text web browser like Lynx or a CLI web browser like curl:
