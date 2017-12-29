@@ -80,7 +80,7 @@ npm start
 ```
 This will run the app on TCP port 3000 by default.  If port 3000 is already in use, you can specify a different port in the `.env` file (see 3B above), e.g.:
 ```
-PORT=3456
+HTTP_PORT=3456
 ```
 
 ##### 6. Start the app automatically
@@ -113,9 +113,22 @@ curl http://localhost:3000
 ```
 You should see the front page of the app (or the raw HTML with curl).
 
-##### 8. Remote access:
-For security reasons (until this app is battle-hardened and has been scrutinized by the ZT community), it currently listens only on the looback interface.  It can be reverse proxied by something like Nginx, but it would be best to access over an SSH tunnel at this stage.
+##### 8. Remote access via HTTPS
+This app listens for HTTP requests on the looback interface (default port 3000).  It can be reverse proxied by Nginx (which can proxy the HTTP as HTTPS), or accessed over an SSH tunnel as described below.
 
+The app can be made to listen on all interfaces for HTTPS requests by specifying HTTPS_PORT in the .env file, e.g.:
+```
+HTTPS_PORT=3443
+```
+If HTTPS_PORT is not specified, then the app will only listen for HTTP requests on localhost.
+
+The app can be made to listen on a specific interface for HTTPS requests by specifying HTTPS_HOST (the host name or IP address of the interface) in the .env file, e.g.:
+```
+HTTPS_HOST=12.34.56.78
+```
+If HTTPS_HOST is not specified, but HTTPS_PORT is specified, then the app will listen for HTTPS requests on all interfaces.
+
+##### 9. Remote access via SSH
 ###### SSH tunnel from Linux / Unix / macOS client
 An SSH tunnel can be established with:
 ```shell
