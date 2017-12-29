@@ -4,28 +4,34 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('ztncui:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('ztncui:server');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+  cert: fs.readFileSync('etc/tls/fullchain.pem'),
+  key: fs.readFileSync('etc/tls/privkey.pem')
+}
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+const sport = normalizePort(process.env.SPORT || '3443');
+app.set('sport', sport);
 
 /**
- * Create HTTP server.
+ * Create HTTPS server and listen on localhost only for HTTP and on all network interfaces for HTTPS
  */
 
-var server = http.createServer(app);
+app.listen(port, 'localhost');
+const server = https.createServer(options, app);
 
-/**
- * Listen on provided port, on loopback network interface.
- */
-
-server.listen(port, 'localhost');
+server.listen(sport);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -34,7 +40,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  let port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -58,18 +64,22 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  let bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
+
+  let sbind = typeof sport === 'string'
+    ? 'Pipe ' + sport
+    : 'Port ' + sport;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error(bind + ' and ' + sbind + ' require elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error(bind + ' and/or ' + sbind + ' already in use');
       process.exit(1);
       break;
     default:
@@ -78,12 +88,12 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Event listener for HTTPS server "listening" event.
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
+  let addr = server.address();
+  let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
