@@ -18,5 +18,5 @@ block users_content
           a(href='/users/' + user.name + '/password') set password
 
     else
-      tr
-        td There are no users on this system
+      .alert.alert-info
+        strong There are no users on this system

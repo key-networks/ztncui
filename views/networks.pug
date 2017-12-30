@@ -43,10 +43,5 @@ block content
             a(href='/controller/network/' + network.nwid + '/members') members
 
       else
-        tr
-          td
-          td There are no networks on this network controller - click <b>Add network</b> above to create a new network.
-          td
-          td
-          td
-          td
+        .alert.alert-info
+          strong There are no networks on this network controller - click "Add network" above to create a new network.
