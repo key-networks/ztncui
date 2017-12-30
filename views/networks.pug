@@ -14,17 +14,17 @@ block content
 
     table.table.table-responsive.table-striped.table-hover
       tr
-        td(width='3%')
+        th(width='3%')
           = ''
-        td(width='20%')
+        th(width='20%')
           | Network name
-        td(width='10%')
+        th(width='10%')
           | Network ID
-        td(width='7%')
+        th(width='7%')
           = ''
-        td(width='10%')
+        th(width='10%')
           = ''
-        td(width='50%')
+        th(width='50%')
           = ''
       each network in networks
         tr
@@ -44,4 +44,9 @@ block content
 
       else
         tr
-          td There are no networks on this network controller
+          td
+          td There are no networks on this network controller - click <b>Add network</b> above to create a new network.
+          td
+          td
+          td
+          td
