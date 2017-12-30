@@ -6,6 +6,9 @@ Screenshots can be seen at [key-networks.com](https://key-networks.com).
 
 ## Getting Started
 
+### Note
+Relative directory references below are relative to the ztncui directory.
+
 ### Prerequisites
 * ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v8 or higher.
 
@@ -127,6 +130,52 @@ The app can be made to listen on a specific interface for HTTPS requests by spec
 HTTPS_HOST=12.34.56.78
 ```
 If HTTPS_HOST is not specified, but HTTPS_PORT is specified, then the app will listen for HTTPS requests on all interfaces.
+
+###### TLS Certificate
+For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  There are a few options:
+
+1. Generate a self-signed certificate as follows:
+   ```shell
+   cd etc/tls
+   openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privkey.pem -out fullchain.pem
+   ```
+   Fill in the required details as prompted.
+
+   The advantage of this option is that it is quick and easy to generate the certificate / private key pair.  The disadvantage is that your web browser will give you a warning that it cannot verify the certificate.  You can override this warning and make a temporary exception.
+
+2. Buy a certificate:
+
+   You will need to store the private key as `etc/tls/privkey.pem` and the full certificate chain as `etc/tls/fullchain.pem`.  They need to be in PEM format.
+
+3. Get a free certificate from Letsencrypt.org:
+
+      a. Install certbot by following the instructions at certbot.eff.org:
+
+        i.   For "Software" select "None of the above".
+        ii.  For "System" select your OS.
+        iii. Follow the instructions to install certbot on your system.
+
+      b. Use certbot to generate a certificate in webroot mode from the root of the ztncui directory:
+      ```shell
+      certbot --webroot -w public -d [network_controller_fqdn]
+      ```
+      Where **[network_controller_fqdn]** is the FQDN that resolves back to the address of the machine running the ZeroTier network controller and ztncui.
+
+      If certbot runs successfully, it should give you the location of your certificate, which should be something like:
+      ```
+      /etc/letsencrypt/live/[network_controller_fqdn]/fullchain.pem
+      ```
+
+      c. Make soft links from etc/tls to the certificate and private key under /etc/letsencrypt/live:
+      ```shell
+      cd etc/tls
+      ln -s /etc/letsencrypt/live/[network_controller_fqdn]/fullchain.pem
+      ln -s /etc/letsencrypt/live/[network_controller_fqdn]/privkey.pem
+      ```
+
+###### Test HTTPS access
+Once you have a certificate at `etc/tls/fullchain.pem` and private key at `etc/tls/privkey.pem`, you should be able to access ztncui over HTTPS on the port specified by HTTPS_PORT.
+
 
 ##### 9. Remote access via SSH
 ###### SSH tunnel from Linux / Unix / macOS client
