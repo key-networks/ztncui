@@ -173,6 +173,8 @@ For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  Ther
       ln -s /etc/letsencrypt/live/[network_controller_fqdn]/privkey.pem
       ```
 
+      d. Take note of the options for renewing Letsencrypt certificates and implement an appropriate strategy.
+
 ###### Test HTTPS access
 Once you have a certificate at `etc/tls/fullchain.pem` and private key at `etc/tls/privkey.pem`, you should be able to access ztncui over HTTPS on the port specified by HTTPS_PORT.
 
