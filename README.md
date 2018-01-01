@@ -7,7 +7,7 @@ Screenshots can be seen at [key-networks.com](https://key-networks.com).
 ## Getting Started
 
 ### Note
-Relative directory references below are relative to the ztncui directory.
+Relative directory references below are relative to the cloned ztncui directory.
 
 ### Prerequisites
 * ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v8 or higher.
