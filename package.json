@@ -27,5 +27,8 @@
   },
   "devDependencies": {
     "nodemon": "^1.12.5"
+  },
+  "pkg": {
+    "assets": ["views/*", "public/**/*", "etc/**/*"]
   }
 }
