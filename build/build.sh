@@ -3,9 +3,9 @@
 set -eux -o pipefail
 
 SRC_DIR=../src
-PKG_DIR=../dist
 BUILD_DIR=`pwd`
-STAGING_DIR=../staging
+PKG_DIR=Release
+STAGING_DIR=Staging
 
 NAME='ztncui'
 DESCRIPTION='ZeroTier network controller user interface'
