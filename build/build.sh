@@ -10,8 +10,8 @@ STAGING_DIR=../staging
 NAME='ztncui'
 DESCRIPTION='ZeroTier network controller user interface'
 VERSION=`grep version ../src/package.json | cut -f4 -d'"'`
-VENDOR='Key Networks https://key-networks.com'
-MAINTAINER='Key Networks https://key-networks.com'
+VENDOR='Key Networks'
+MAINTAINER='https://key-networks.com/contact'
 URL='https://key-networks.com'
 LICENSE='GPLv3'
 
