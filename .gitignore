@@ -1,5 +1,3 @@
-etc/passwd
-etc/storage/
-node_modules/
+dist/
+staging/
 *.swp
-.env

@@ -1,4 +1,4 @@
-# ztncui - ZeroTier network controller UI
+# ztncui - ZeroTier network controller user interface
 
 ztncui is a web UI for a standalone [ZeroTier](https://zerotier.com) network controller.
 
