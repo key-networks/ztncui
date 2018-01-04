@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -eux -o pipefail
+THISDIR=`pwd`
+if [ `basename $THISDIR`  != 'build' ]; then
+  echo "Execute `basename $0` from the build directory"
+  exit 1
+fi
 
 SRC_DIR=../src
 BUILD_DIR=`pwd`
@@ -15,14 +19,42 @@ MAINTAINER='https://key-networks.com/contact'
 URL='https://key-networks.com'
 LICENSE='GPLv3'
 
+BINDINGGYP='node_modules/argon2/binding.gyp'
+
+if [ ! -f  /usr/lib/gcc/x86_64-redhat-linux/7/libstdc++.a ]; then
+  echo "You must install libstdc++-static"
+  exit 1
+fi
 
 rm -fr $STAGING_DIR && mkdir $STAGING_DIR
 rm -fr $PKG_DIR && mkdir $PKG_DIR
 
+pushd .
 cd ../src
+pushd .
 npm install
-pkg -c ./package.json -t node8-linux-x64 bin/www -o ztncui
-cd -
+
+patch --forward --dry-run --silent $BINDINGGYP $BUILD_DIR/binding.gyp.patch
+if [ $? -eq 0 ]; then
+  echo "Applying patch to $BINDINGGYP..."
+  patch --forward $BINDINGGYP $BUILD_DIR/binding.gyp.patch
+fi
+if [ $? -ne 0 ]; then
+  echo "Failed to patch $BINDINGGYP"
+  exit 1
+fi
+
+cd node_modules/argon2/
+node-gyp rebuild
+if [ $? -ne 0 ]; then
+  echo "Failed to rebuild argon2"
+  exit 1
+fi
+
+popd
+pkg -c ./package.json -t node8-linux-x64 bin/www -o $BUILD_DIR/ztncui
+
+popd
 
 install -m 750 -d $STAGING_DIR/opt
 install -m 750 -d $STAGING_DIR/opt/key-networks
@@ -32,7 +64,7 @@ install -m 600 $SRC_DIR/etc/default.passwd $STAGING_DIR/opt/key-networks/ztncui/
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/etc/tls
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/node_modules/argon2/build/Release
 install -m 755 $SRC_DIR/node_modules/argon2/build/Release/argon2.node $STAGING_DIR/opt/key-networks/ztncui/node_modules/argon2/build/Release/
-install -m 755 $SRC_DIR/ztncui $STAGING_DIR/opt/key-networks/ztncui/
+install -m 755 $BUILD_DIR/ztncui $STAGING_DIR/opt/key-networks/ztncui/
 
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $STAGING_DIR/opt/key-networks/ztncui/etc/tls/privkey.pem -out $STAGING_DIR/opt/key-networks/ztncui/etc/tls/fullchain.pem -config $BUILD_DIR/openssl.cnf
 
@@ -44,7 +76,7 @@ GENERAL_FPM_FLAGS="
   --chdir $STAGING_DIR
   --package $PKG_DIR
   --directories /opt/key-networks
-  --after-install /dev/null
+  --after-install after-install.sh
   --before-install /dev/null
   --after-remove /dev/null
   --before-remove /dev/null

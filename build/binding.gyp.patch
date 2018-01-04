@@ -1,0 +1,10 @@
+--- binding.gyp	2016-11-30 05:56:09.000000000 +0800
++++ /home/srp/dev/node/ztncui/build/binding.gyp	2018-01-04 12:39:02.266078387 +0800
+@@ -42,6 +42,7 @@
+         "<!(node -e \"require('nan')\")",
+         "argon2/include"
+       ],
++      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/7/libstdc++.a"],
+       "dependencies": ["libargon2"],
+       "configurations": {
+         "Debug": {
