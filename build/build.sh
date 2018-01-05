@@ -80,6 +80,7 @@ GENERAL_FPM_FLAGS="
   --chdir $STAGING_DIR
   --package $PKG_DIR
   --directories /opt/key-networks
+  --depends zerotier-one
   --before-install before-install.sh
   --after-install after-install.sh
   --before-remove before-remove.sh
