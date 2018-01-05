@@ -94,7 +94,6 @@ fpm -s dir -t rpm \
   --vendor "$VENDOR" \
   --maintainer "$MAINTAINER" \
   --description "$DESCRIPTION" \
-  --rpm-use-file-permissions \
   --rpm-user ztncui \
   --rpm-group ztncui \
   .
@@ -104,8 +103,6 @@ fpm -s dir -t deb \
   --vendor "$VENDOR" \
   --maintainer "$MAINTAINER" \
   --description "$DESCRIPTION" \
-  --deb-use-file-permissions \
   --deb-user ztncui \
   --deb-group ztncui \
   .
-
