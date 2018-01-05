@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 THISDIR=`pwd`
 if [ `basename $THISDIR`  != 'build' ]; then
@@ -60,11 +60,15 @@ install -m 750 -d $STAGING_DIR/opt
 install -m 750 -d $STAGING_DIR/opt/key-networks
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/etc
-install -m 600 $SRC_DIR/etc/default.passwd $STAGING_DIR/opt/key-networks/ztncui/etc/default.passwd
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/etc/tls
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/node_modules/argon2/build/Release
+install -m 755 -d $STAGING_DIR/lib/systemd/system
+install -m 600 $SRC_DIR/etc/default.passwd $STAGING_DIR/opt/key-networks/ztncui/etc/default.passwd
 install -m 755 $SRC_DIR/node_modules/argon2/build/Release/argon2.node $STAGING_DIR/opt/key-networks/ztncui/node_modules/argon2/build/Release/
 install -m 755 $BUILD_DIR/ztncui $STAGING_DIR/opt/key-networks/ztncui/
+install -m 644 $BUILD_DIR/ztncui.service $STAGING_DIR/lib/systemd/system
+
+rm -f $BUILD_DIR/ztncui
 
 openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $STAGING_DIR/opt/key-networks/ztncui/etc/tls/privkey.pem -out $STAGING_DIR/opt/key-networks/ztncui/etc/tls/fullchain.pem -config $BUILD_DIR/openssl.cnf
 
@@ -76,12 +80,12 @@ GENERAL_FPM_FLAGS="
   --chdir $STAGING_DIR
   --package $PKG_DIR
   --directories /opt/key-networks
+  --before-install before-install.sh
   --after-install after-install.sh
-  --before-install /dev/null
-  --after-remove /dev/null
-  --before-remove /dev/null
-  --after-upgrade /dev/null
-  --before-upgrade /dev/null
+  --before-remove before-remove.sh
+  --after-remove after-remove.sh
+  --before-upgrade before-upgrade.sh
+  --after-upgrade after-upgrade.sh
 "
 
 fpm -s dir -t rpm \
@@ -90,6 +94,8 @@ fpm -s dir -t rpm \
   --maintainer "$MAINTAINER" \
   --description "$DESCRIPTION" \
   --rpm-use-file-permissions \
+  --rpm-user ztncui \
+  --rpm-group ztncui \
   .
 
 fpm -s dir -t deb \
@@ -98,5 +104,7 @@ fpm -s dir -t deb \
   --maintainer "$MAINTAINER" \
   --description "$DESCRIPTION" \
   --deb-use-file-permissions \
+  --deb-user ztncui \
+  --deb-group ztncui \
   .
 

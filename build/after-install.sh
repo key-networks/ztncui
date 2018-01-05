@@ -1,11 +1,6 @@
-#!/bin/bash
-
 ETC='/opt/key-networks/ztncui/etc'
-
 echo "Copying default password file..."
-cp -v $ETC/default.passwd $ETC/passwd
-if [ $? -eq 0 ]; then
-  exit 0
-else
-  exit 1
-fi
+cp -pv $ETC/default.passwd $ETC/passwd
+echo "Enabling and starting ztncui service..."
+systemctl enable ztncui > /dev/null 2>&1
+systemctl start ztncui > /dev/null 2>&1
