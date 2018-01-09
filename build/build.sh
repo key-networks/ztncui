@@ -107,3 +107,6 @@ fpm -s dir -t deb \
   --deb-user ztncui \
   --deb-group ztncui \
   .
+
+createrepo $PKG_DIR
+gpg -u 'Key Networks' --detach-sign --armor $PKG_DIR/repodata/repomd.xml
