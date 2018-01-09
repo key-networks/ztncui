@@ -96,6 +96,7 @@ fpm -s dir -t rpm \
   --description "$DESCRIPTION" \
   --rpm-user ztncui \
   --rpm-group ztncui \
+  --rpm-sign \
   .
 
 fpm -s dir -t deb \
