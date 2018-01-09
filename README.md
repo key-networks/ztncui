@@ -1,8 +1,11 @@
 # ztncui - ZeroTier network controller user interface
 
-ztncui is a web UI for a standalone [ZeroTier](https://zerotier.com) network controller.
+ztncui is a web user interface for a standalone [ZeroTier](https://zerotier.com) network controller.
 
-Screenshots can be seen at [key-networks.com](https://key-networks.com).
+Screenshots can be seen at [key-networks.com/ztncui](https://key-networks.com/ztncui).
+
+## Packages
+Instructions for installing on Linux from RPM or DEB packges are available at [key-networks.com/ztncui](https://key-networks.com/ztncui).
 
 ## Getting Started
 
