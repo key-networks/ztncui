@@ -56,7 +56,7 @@ pkg -c ./package.json -t node8-linux-x64 bin/www -o $BUILD_DIR/ztncui
 
 popd
 
-install -m 750 -d $STAGING_DIR/opt
+install -m 755 -d $STAGING_DIR/opt
 install -m 750 -d $STAGING_DIR/opt/key-networks
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui
 install -m 750 -d $STAGING_DIR/opt/key-networks/ztncui/etc
