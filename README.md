@@ -34,7 +34,7 @@ git clone https://github.com/key-networks/ztncui
 
 ##### 2. Install the [node.js](https://nodejs.org) packages:
 ```shell
-cd ztncui
+cd ztncui/src
 npm install
 ```
 
