@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -139,6 +139,42 @@ exports.ipAssignmentPools = async function(nwid, ipAssignmentPool, action) {
   }
 }
 
+exports.ipAssignmentDelete = async function(nwid, id, ipAssignmentIndex) {
+  const options = await init_options();
+  options.method = 'POST';
+
+  try {
+    const member = await member_detail(nwid, id);
+    const ipAssignments = member.ipAssignments;
+    ipAssignments.splice(ipAssignmentIndex, 1);
+    options.body = { ipAssignments: ipAssignments };
+    const response = await got(ZT_ADDR + '/controller/network/'
+                                            + nwid + '/member/' + id, options);
+    response.body.deleted = true;
+    return response.body;
+  } catch(err) {
+    throw(err);
+  }
+}
+
+exports.ipAssignmentAdd = async function(nwid, id, ipAssignment) {
+  const options = await init_options();
+  options.method = 'POST';
+
+  try {
+    const member = await member_detail(nwid, id);
+    const ipAssignments = member.ipAssignments;
+    ipAssignments.push(ipAssignment.ipAddress);
+    options.body = { ipAssignments: ipAssignments };
+    const response = await got(ZT_ADDR + '/controller/network/'
+                                            + nwid + '/member/' + id, options);
+    response.body.added = true;
+    return response.body;
+  } catch(err) {
+    throw(err);
+  }
+}
+
 exports.routes = async function(nwid, route, action) {
   const options = await init_options();
   options.method = 'POST';
@@ -205,7 +241,7 @@ exports.members = async function(nwid) {
   }
 }
 
-exports.member_detail = async function(nwid, id) {
+member_detail = async function(nwid, id) {
   const options = await init_options();
 
   try {
@@ -216,6 +252,7 @@ exports.member_detail = async function(nwid, id) {
     throw(err);
   }
 }
+exports.member_detail = member_detail;
 
 exports.member_object = async function(nwid, id, object) {
   const options = await init_options();

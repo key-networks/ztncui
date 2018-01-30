@@ -1,0 +1,70 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  if errors
+    .row
+      .col-sm-12
+        .alert.alert-warning
+          b Note errors listed below
+
+  form(method='POST' action='')
+
+    .row
+      .col-sm-6
+        h4 Member name: 
+          b= member.name
+      .col-sm-6.right
+        h4 ZeroTier address: 
+          b= member.id
+
+    .row
+      .col-sm-12
+        table.table.table-responsive.table-striped.table-hover
+          tr
+            th(width='3%')
+            th IP address
+
+          each ipAssignment, index in member.ipAssignments
+            tr
+              td(width='3%')
+                a.btn.btn-link(role='button' href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments/' + index + '/delete')
+                  i.glyphicon.glyphicon-trash
+              td
+                each digit in ipAssignment
+                  = digit
+
+          tr
+            td
+              button.btn.btn-link(type='submit')
+                i.glyphicon.glyphicon-plus
+            td
+              input#ipAddress.form-control(type='text' name='ipAddress' placeholder='IP address' value=(undefined===ipAssignment? '' : ipAssignment.ipAddress))
+
+    .row
+      .col-sm-12
+        a(href='/controller/network/' + network.nwid + '/routes')
+          h3 Managed routes
+        table.table.table-responsive.table-striped.table-hover
+          tr
+            th
+            th Target
+            th Gateway
+            each route in network.routes
+              tr
+                td(width='3%')
+                  a.btn.btn-link(role='button' href='/controller/network/' + network.nwid + '/routes/' + route.target + '/delete')
+                    i.glyphicon.glyphicon-trash
+                td= route.target
+                td= route.via
+
+  if errors
+    .row
+      .col-sm-12
+        ul
+          for err in errors
+            li!= err.msg

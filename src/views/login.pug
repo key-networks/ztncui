@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends login_layout
@@ -26,7 +26,7 @@ block login_content
           .input-group
             span.input-group-addon
               i.glyphicon.glyphicon-user
-            input#username.form-control.input-lg(type='text' name='username' placeholder='Enter your username')
+            input#username.form-control(type='text' name='username' placeholder='Enter your username')
 
       .form-group.row
         .col-sm-2
@@ -35,11 +35,11 @@ block login_content
           .input-group
             span.input-group-addon
               i.glyphicon.glyphicon-lock
-            input#password.form-control.input-lg(type='password' name='password' placeholder='Enter your password')
+            input#password.form-control(type='password' name='password' placeholder='Enter your password')
 
       .form-group.row
         .col-sm-2
         .col-sm-10
-          button.btn.btn-primary.btn-lg(type='submit') Login
+          button.btn.btn-primary(type='submit') Login
           = ' '
-          a.btn.btn-default.btn-lg(href='/' name='cancel' role='button') Cancel
+          a.btn.btn-default(href='/' name='cancel' role='button') Cancel

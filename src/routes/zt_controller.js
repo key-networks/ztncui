@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -75,6 +75,12 @@ router.get('/network/:nwid/members', restrict, networkController.members);
 
 // POST request for easy member (de)authorization
 router.post('/network/:nwid/members', restrict, networkController.members);
+
+// GET request for member ipAssignment delete
+router.get('/network/:nwid/member/:id/ipAssignments/:index/delete', restrict, networkController.delete_ip);
+
+// POST request for member ipAssignment add
+router.post('/network/:nwid/member/:id/ipAssignments', restrict, networkController.assign_ip);
 
 
 

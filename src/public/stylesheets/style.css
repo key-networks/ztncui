@@ -11,6 +11,20 @@ input[type=radio] {
   transform: scale(1.5);
 }
 
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
+
+.left {
+  float: left;
+  text-align: left;
+}
+
+.right {
+  float: right;
+  text-align: right;
+}
+
 .navbar-inverse {
   background-color: #315b80;
   border-color: #23415c;

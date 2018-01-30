@@ -1,18 +1,14 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
-extends controller_layout
+extends network_layout
 
-block content
+block net_content
   if error
      b #{error}
   else
-    h2
-      a(href= network.nwid + '/name') #{network.name}
-      |  (#{network.nwid}):
-    
     - if (members !== undefined)
       h3 Members
       each value, key in members

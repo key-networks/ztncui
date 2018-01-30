@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
@@ -46,9 +46,13 @@ block net_content
             input.checkbox(type='checkbox' name='authCheckBox' value=member.id checked=(member.authorized? true : false))
           td
             each ipAssignment in member.ipAssignments
-              each digit in ipAssignment
-                = digit
-              = ' '
+              a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                each digit in ipAssignment
+                  = digit
+                = ' '
+            else
+              a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                | IP assignment
 
       else
         .alert.alert-info

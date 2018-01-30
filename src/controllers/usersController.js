@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -44,18 +44,24 @@ update_users = async function(users) {
 }
 
 exports.users_list = async function(req, res) {
-  const page = 'users';
+  const nav =
+    {
+      active: 'users',
+    }
 
   try {
     const users = await get_users();
-    res.render('users', { title: 'Admin users', page: page, message: 'List of users with admin priviledges', users: users });
+    res.render('users', { title: 'Admin users', nav: nav, message: 'List of users with admin priviledges', users: users });
   } catch (err) {
-    res.render('users', { title: 'Admin users', page: page, message: 'Error', users: null, error: 'Error returning list of users: ' + err });
+    res.render('users', { title: 'Admin users', nav: nav, message: 'Error', users: null, error: 'Error returning list of users: ' + err });
   }
 }
 
 exports.password_get = async function(req, res) {
-  const page = 'users';
+  const nav =
+    {
+      active: 'users',
+    }
 
   const user =
     {
@@ -63,11 +69,14 @@ exports.password_get = async function(req, res) {
       password1: null,
       password2: null
     };
-  res.render('password', { title: 'Set password', page: page, user: user, readonly: true, message: '' });
+  res.render('password', { title: 'Set password', nav: nav, user: user, readonly: true, message: '' });
 }
 
 exports.password_post = async function(req, res) {
-  const page = 'users';
+  const nav =
+    {
+      active: 'users',
+    }
 
   req.checkBody('username', 'Username required').notEmpty();
   req.sanitize('username').escape();
@@ -90,7 +99,7 @@ exports.password_post = async function(req, res) {
         password2: req.body.password2
       };
     const message = 'Please check errors below';
-    res.render('password', { title: 'Set password', page: page, user: user, readonly: true, message: message, errors: errors });
+    res.render('password', { title: 'Set password', nav: nav, user: user, readonly: true, message: message, errors: errors });
   } else {
     let pass_set = true;
     if (req.body.pass_set === 'check') pass_set = false;
@@ -115,12 +124,15 @@ exports.password_post = async function(req, res) {
     users = await update_users(users);
 
     const message = 'Successfully set password for ' + req.body.username;
-    res.render('password', { title: 'Set password', page: page, user: user, readonly: true, message: message });
+    res.render('password', { title: 'Set password', nav: nav, user: user, readonly: true, message: message });
   }
 }
 
 exports.user_create_get = async function(req, res) {
-  const page = 'create_user';
+  const nav =
+    {
+      active: 'create_user',
+    }
 
   const user =
     {
@@ -129,17 +141,23 @@ exports.user_create_get = async function(req, res) {
       password2: null
     };
 
-  res.render('password', { title: 'Create new admin user', page: page, user: user, readonly: false});
+  res.render('password', { title: 'Create new admin user', nav: nav, user: user, readonly: false});
 }
 
 exports.user_create_post = async function(req, res) {
-  const page = 'create_user';
+  const nav =
+    {
+      active: 'create_user',
+    }
 
   res.redirect(307, '/users/' + req.body.username + '/password');
 }
 
 exports.user_delete = async function(req, res) {
-  const page = 'users';
+  const nav =
+    {
+      active: 'users',
+    }
 
   try {
     var users = await get_users();
@@ -150,7 +168,7 @@ exports.user_delete = async function(req, res) {
   const user = users[req.params.name];
 
   if (user && (req.session.user.name === user.name)) {
-    res.render('user_delete', { title: 'Delete user', page: page, user: user, self_delete: true });
+    res.render('user_delete', { title: 'Delete user', nav: nav, user: user, self_delete: true });
   }
 
   if (req.body.delete === 'delete') {
@@ -158,15 +176,15 @@ exports.user_delete = async function(req, res) {
       const deleted_user = { name: user.name };
       delete users[user.name];
       users = await update_users(users);
-      res.render('user_delete', { title: 'Deleted user', page: page, user: deleted_user, deleted: true });
+      res.render('user_delete', { title: 'Deleted user', nav: nav, user: deleted_user, deleted: true });
     } else {
-      res.render('user_delete', { title: 'Delete user', page: page, user: null });
+      res.render('user_delete', { title: 'Delete user', nav: nav, user: null });
     }
   } else {
     if (user) {
-      res.render('user_delete', { title: 'Delete user', page: page, user: user });
+      res.render('user_delete', { title: 'Delete user', nav: nav, user: user });
     } else {
-      res.render('user_delete', { title: 'Delete user', page: page, user: null });
+      res.render('user_delete', { title: 'Delete user', nav: nav, user: null });
     }
   }
 }

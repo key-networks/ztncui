@@ -6,10 +6,11 @@ if [ `basename $THISDIR`  != 'build' ]; then
   exit 1
 fi
 
-SRC_DIR=../src
-BUILD_DIR=`pwd`
-PKG_DIR=Release
-STAGING_DIR=Staging
+BASE_DIR=`dirname $THISDIR`
+SRC_DIR=$BASE_DIR/src
+BUILD_DIR=$BASE_DIR/build
+PKG_DIR=$BASE_DIR/Release
+STAGING_DIR=$BASE_DIR/Staging
 
 NAME='ztncui'
 DESCRIPTION='ZeroTier network controller user interface'
