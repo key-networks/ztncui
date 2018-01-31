@@ -83,7 +83,6 @@ router.get('/network/:nwid/member/:id/ipAssignments/:index/delete', restrict, ne
 router.post('/network/:nwid/member/:id/ipAssignments', restrict, networkController.assign_ip);
 
 
-
 // GET request for any network object
 router.get('/network/:nwid/:object', restrict, networkController.network_object);
 

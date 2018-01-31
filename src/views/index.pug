@@ -17,6 +17,7 @@ block content
   if error
      b #{error}
   else
-    p This network controller has a ZeroTier address of <b>#{zt_address}</b>
+    h4 This network controller has a ZeroTier address of <b>#{zt_address}</b>
 
-    a(href='/controller/networks') List all networks on this network controller
+    h4
+      a(href='/controller/networks') List all networks on this network controller

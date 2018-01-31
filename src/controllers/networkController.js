@@ -587,6 +587,25 @@ exports.members = async function(req, res) {
           throw err;
         }
       }
+    } else if (req.body.activeBridge) {
+      req.checkBody('activeBridge', 'activeBridge state must be boolean').isBoolean();
+      req.sanitize('activeBridge').trim();
+      req.sanitize('activeBridge').escape();
+
+      errors = req.validationErrors();
+
+      if (!errors) {
+        const activeBridge =
+          {
+            activeBridge: req.body.activeBridge
+          };
+
+        try {
+          const mem = await zt.member_object(req.params.nwid, req.body.id, activeBridge);
+        } catch (err) {
+          throw err;
+        }
+      }
     } else if (req.body.name) {
       req.sanitize('name').trim();
       req.sanitize('name').escape();
@@ -709,16 +728,12 @@ exports.assign_ip = async function(req, res) {
       let ipAddressInManagedRoute = false;
       network.routes.forEach(function(item) {
         let ipv4 = new ipaddr.Address4(value);
-        console.log('ipv4 = ' + JSON.stringify(ipv4));
         let target4 = new ipaddr.Address4(item.target);
-        console.log('target4 = ' + JSON.stringify(target4));
         if (ipv4.isValid() && target4.isValid()) {
           if (ipv4.isInSubnet(target4)) ipAddressInManagedRoute =  true;
         }
         let ipv6 = new ipaddr.Address6(value);
-        console.log('ipv6 = ' + JSON.stringify(ipv6));
         let target6 = new ipaddr.Address6(item.target);
-        console.log('target6 = ' + JSON.stringify(target6));
         if (ipv6.isValid() && target6.isValid()) {
           if (ipv6.isInSubnet(target6)) ipAddressInManagedRoute =  true;
         }

@@ -8,8 +8,14 @@ extends network_layout
 block net_content
   script.
     $(function() {
-      $('.checkbox').on('click', function() {
+      $('#authCheckBox').on('click', function() {
         $.post('', {id: this.value, auth: this.checked});
+      });
+    });
+
+    $(function() {
+      $('#activeBridgeCheckBox').on('click', function() {
+        $.post('', {id: this.value, activeBridge: this.checked});
       });
     });
 
@@ -30,7 +36,9 @@ block net_content
           | Member ID
         td(width='10%')
           | Authorized
-        td(width='57%')
+        td(width='10%')
+          | Active bridge
+        td(width='47%')
           | IP assignment
       each member in members
         tr
@@ -43,7 +51,9 @@ block net_content
           td
             a(href=url) #{member.id}
           td
-            input.checkbox(type='checkbox' name='authCheckBox' value=member.id checked=(member.authorized? true : false))
+            input.checkbox(type='checkbox' id='authCheckBox' value=member.id checked=(member.authorized? true : false))
+          td
+            input.checkbox(type='checkbox' id='activeBridgeCheckBox' value=member.id checked=(member.activeBridge? true : false))
           td
             each ipAssignment in member.ipAssignments
               a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
@@ -58,8 +68,6 @@ block net_content
         .alert.alert-info
           strong There are no members on this network - invite users to join #{network.nwid}
 
-    a.btn.btn-default(href='/controller/networks' name='networks' role='button') Networks
-    = ' '
     a.btn.btn-default(href='' name='refresh' role='button') Refresh
 
     if errors

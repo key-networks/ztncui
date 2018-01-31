@@ -11,4 +11,10 @@ block net_content
       a(href='../' + member.address)  #{member.address}
   h4 Editing of
     b  #{title}
-    |  has not been implemented
+    |  has not been implemented.
+
+  h4
+    | Note that you may be able to edit some properties on the 
+    strong
+      a(href='/controller/network/' + network.nwid + '/members') Members
+    |  page.
