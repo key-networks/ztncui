@@ -6,8 +6,7 @@
 extends network_layout
 
 block net_content
-  h4 for member
-    a(href= member.address)  #{member.address}
+  h4 for member #{member.name} (#{member.address})
 
   each value, key in member
     .row

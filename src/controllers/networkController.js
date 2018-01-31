@@ -410,6 +410,9 @@ exports.member_detail = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     const member = await zt.member_detail(req.params.nwid, req.params.id);
+    const name = await storage.getItem(member.id);
+    if (!name) name = '';
+    member.name = name;
     nav.whence = '/controller/network/' + network.nwid + '/members';
     res.render('member_detail', {title: 'Network member detail', nav: nav, network: network, member: member});
   } catch (err) {
