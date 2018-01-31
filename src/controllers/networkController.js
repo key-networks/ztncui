@@ -446,26 +446,6 @@ exports.member_object = async function(req, res) {
   }
 }
 
-// Member authorized POST
-exports.member_authorized = async function(req, res) {
-  const nav =
-    {
-      active: 'networks',
-      whence: ''
-    }
-
-  const authorized = { authorized: req.body.authorized };
-
-  try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member = await zt.member_object(req.params.nwid, req.params.id, authorized);
-    nav.whence = '/controller/network/' + network.nwid + '/members';
-    res.render('authorized', {title: 'authorized', nav: nav, network: network, member: member});
-  } catch (err) {
-    res.render('authorized', {title: 'authorized', nav: nav, error: 'Error authorizing member ' + req.params.id + ' on network ' + req.params.nwid + ': ' + err});
-  }
-}
-
 // Easy network setup GET
 exports.easy_get = async function(req, res) {
   const nav =

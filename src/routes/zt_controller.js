@@ -58,9 +58,6 @@ router.post('/network/:nwid/member/:id/delete', restrict, networkController.memb
 // GET request for any member object
 router.get('/network/:nwid/member/:id/:object', restrict, networkController.member_object);
 
-// POST request for member authorized
-router.post('/network/:nwid/member/:id/authorized', restrict, networkController.member_authorized);
-
 // GET request for member detail
 router.get('/network/:nwid/member/:id', restrict, networkController.member_detail);
 
