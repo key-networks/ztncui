@@ -9,19 +9,19 @@ block net_content
   script.
     $(function() {
       $('#authCheckBox').on('click', function() {
-        $.post('', {id: this.value, auth: this.checked});
+        $.post('', {'id': this.value, 'auth': this.checked});
       });
     });
 
     $(function() {
       $('#activeBridgeCheckBox').on('click', function() {
-        $.post('', {id: this.value, activeBridge: this.checked});
+        $.post('', {'id': this.value, 'activeBridge': this.checked});
       });
     });
 
     $(function() {
       $('.text').on('change', function() {
-        $.post('', {id: this.name, name: this.value});
+        $.post('', {'id': this.name, 'name': this.value});
       });
     });
 

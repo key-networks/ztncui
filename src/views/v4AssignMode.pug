@@ -6,24 +6,21 @@
 extends network_layout
 
 block net_content
-  p Let ZT assign IPv4 addresses?
+  script.
+    $(function() {
+      $('.checkbox').on('click', function() {
+        $.post('', {'zt': $('#v4AssignModeCheckBox').is(':checked')});
+      });
+    });
 
   form(method='POST' action='')
-    .radio
-      label
-        input(type='radio' name='zt' value='true' checked=network.v4AssignMode.zt)
-        | Yes
-    .radio
-      label
-        input(type='radio' name='zt' value='false' checked=!network.v4AssignMode.zt)
-        | No
+    table.table.table-responsive.table-striped.table-hover
+      tr
+        td(width='3%')
+          input#v4AssignModeCheckBox.checkbox(type='checkbox' checked=(network.v4AssignMode.zt? true : false))
+        td Auto-assign from IP Assignment Pool
 
-    .form-group(style='padding-top: 10px')
-      button.btn.btn-primary(type='submit') Submit
-      = ' '
-      a.btn.btn-default(href='/controller/network/' + network.nwid name='cancel' role='button') Cancel
-
-    if errors
-      ul
-        for err in errors
-          li!= err.msg
+  if errors
+    ul
+      for err in errors
+        li!= err.msg

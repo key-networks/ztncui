@@ -6,49 +6,29 @@
 extends network_layout
 
 block net_content
+  script.
+    $(function() {
+      $('.checkbox').on('click', function() {
+        $.post('', {'6plane': $('#6planeCheckBox').is(':checked'), 'rfc4193': $('#rfc4193CheckBox').is(':checked'), 'zt': $('#ztCheckBox').is(':checked')});
+      });
+    });
+
   form(method='POST' action='')
     table.table.table-responsive.table-striped.table-hover
       tr
-        th(width='25%')
-        th(width='2%') Yes
-        th(width='73%') No
-      tr
+        td(width='3%')
+          input#6planeCheckBox.checkbox(type='checkbox' checked=(network.v6AssignMode['6plane']? true : false))
         td ZT 6plane (/80 routable for each device)
-        td
-          .radio
-            label
-              input(type='radio' name='6plane' value='true' checked=network.v6AssignMode['6plane'])
-        td
-          .radio
-            label
-              input(type='radio' name='6plane' value='false' checked=!network.v6AssignMode['6plane'])
       tr
+        td
+          input#rfc4193CheckBox.checkbox(type='checkbox' checked=(network.v6AssignMode['rfc4193']? true : false))
         td ZT rfc4193 (/128 for each device)
-        td
-          .radio
-            label
-              input(type='radio' name='rfc4193' value='true' checked=network.v6AssignMode.rfc4193)
-        td
-          .radio
-            label
-              input(type='radio' name='rfc4193' value='false' checked=!network.v6AssignMode.rfc4193)
       tr
+        td
+          input#ztCheckBox.checkbox(type='checkbox' checked=(network.v6AssignMode['zt']? true : false))
         td Auto-assign from IP Assignment Pool
-        td
-          .radio
-            label
-              input(type='radio' name='zt' value='true' checked=network.v6AssignMode.zt)
-        td
-          .radio
-            label
-              input(type='radio' name='zt' value='false' checked=!network.v6AssignMode.zt)
 
-    .form-group(style='padding-top: 10px')
-      button.btn.btn-primary(type='submit') Submit
-      = ' '
-      a.btn.btn-default(href='/controller/network/' + network.nwid name='cancel' role='button') Cancel
-
-    if errors
-      ul
-        for err in errors
-          li!= err.msg
+  if errors
+    ul
+      for err in errors
+        li!= err.msg
