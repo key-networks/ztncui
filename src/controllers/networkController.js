@@ -656,7 +656,7 @@ exports.member_delete = async function(req, res) {
 
     nav.whence = '/controller/network/' + network.nwid + '/members';
     res.render('member_delete', {title: 'Delete member from ' + network.name,
-                                            network: network, member: member});
+                                  nav: nav, network: network, member: member});
   } catch (err) {
     res.render('member_delete', {title: 'Delete member from network', nav: nav,
                     error: 'Error resolving detail for member ' + req.params.id
@@ -686,7 +686,7 @@ exports.delete_ip = async function(req, res) {
                                                   member.id + '/ipAssignments');
     }
     res.render('ipAssignments', {title: 'ipAssignments ' + network.name,
-                    index: req.params.index, network: network, member: member});
+          nav: nav, index: req.params.index, network: network, member: member});
   } catch (err) {
     res.render('ipAssignments', {title: 'ipAssignments', nav: nav,
                     error: 'Error resolving detail for member ' + req.params.id

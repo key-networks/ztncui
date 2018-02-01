@@ -13,9 +13,11 @@ block net_content
 
   else
     .alert.alert-info
-      strong.
-        Note: To undo a member deletion, just get the member to 
-        join the network again
+      strong
+        ul
+          li To undo a member deletion, just get the member to join the network again.
+          li After deleting a member, you may see them appear in the list of members again.  This is a ZeroTier issue.  Just get the user to leave the network.
+
     form(method='POST' action='')
       button.btn.btn-primary(type='submit', name='delete') Delete #{member.name} (#{member.id})
       = ' '
