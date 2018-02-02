@@ -363,8 +363,6 @@ exports.v4AssignMode = async function (req, res) {
       v4AssignMode: { zt: req.body.zt }
     };
 
-  console.log('v4AssignMode: ' + JSON.stringify(v4AssignMode));
-
   try {
     const network = await zt.network_object(req.params.nwid, v4AssignMode);
     nav.whence = '/controller/network/' + network.nwid;
@@ -391,8 +389,6 @@ exports.v6AssignMode = async function (req, res) {
           'zt': req.body.zt
         }
     };
-
-  console.log('v6AssignMode: ' + JSON.stringify(v6AssignMode));
 
   try {
     const network = await zt.network_object(req.params.nwid, v6AssignMode);
