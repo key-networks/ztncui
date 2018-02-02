@@ -259,6 +259,12 @@ If the user's device is online and you click the **Refresh** button, you should 
 
 Once two or more members are authorized on the network, they should be able to connect to each other via their assigned IP addresses.
 
+#### IP Assignments
+IP assignments can be changed by clicking on the IP address in the **members** page.  Enter an IP address in the managed route subnet and click the **+** icon.  Then delete the old IP address.
+
+#### Ethernet bridging
+Ethernet bridging between virtual and physical networks can be enabled by checking the **Active bridge** checkbox on the **members** page.
+
 #### Network detail
 On the **Networks** page, click **detail** to see the detail of a network.
 
@@ -273,10 +279,6 @@ Note that editing of certain properties, such as rules and tags, has not been im
 
 #### Member detail
 On the network **detail** page and on the **members** page, if you click on the member ID, you will end up on the member detail page.
-
-Certain properties for the member can be set by clicking on them - e.g.:
-* authorized
-* umm... nothing else at this stage - let us know what you need.
 
 ## Feedback
 Please give us your feedback... good, bad or ugly.  Constructive criticism is welcomed.  Please use the contact form at [key-networks.com](https://key-networks.com/) - Thanks :)
