@@ -31,12 +31,19 @@ const https_host = process.env.HTTPS_HOST || null;
 app.set('https_host', https_host);
 
 /**
- * Create HTTPS server and listen on localhost only for HTTP and
+ * Create HTTPS server and listen on localhost only for HTTP, unless the 
+ * environment variable HTTP_ALL_INTERFACES is set, and
  * on all network interfaces for HTTPS if HTTPS_PORT is set in env,
  * or on specific interface if HTTPS_HOST is set in env.
  */
 
-app.listen(http_port, 'localhost');
+const http_all_int = process.env.HTTP_ALL_INTERFACES || null;
+if (http_all_int) {
+    app.listen(http_port);  
+} else {
+    app.listen(http_port, 'localhost');
+}
+
 const server = https.createServer(options, app);
 
 if (https_port) {
