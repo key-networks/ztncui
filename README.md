@@ -4,6 +4,8 @@ ztncui is a web user interface for a standalone [ZeroTier](https://zerotier.com)
 
 Screenshots can be seen at [key-networks.com/ztncui](https://key-networks.com/ztncui).
 
+Follow us on [![alt @key_networks on Twitter](https://i.imgur.com/wWzX9uB.png)](https://twitter.com/key_networks)
+
 ## Packages
 Instructions for installing on Linux from RPM or DEB packges are available at [key-networks.com/ztncui](https://key-networks.com/ztncui).
 
