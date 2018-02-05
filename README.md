@@ -127,17 +127,31 @@ You should see the front page of the app (or the raw HTML with curl).
 ##### 8. Remote access via HTTPS
 This app listens for HTTP requests on the looback interface (default port 3000).  It can be reverse proxied by Nginx (which can proxy the HTTP as HTTPS), or accessed over an SSH tunnel as described below.
 
+The app can be made to listen on all interfaces for HTTP requests by setting HTTP_ALL_INTERFACES in the .env file, e.g.:
+```
+HTTP_ALL_INTERFACES=yes
+```
+Note that HTTP traffic is unencrypted, so this should only be done on a secure network, otherwise usernames and passwords will be exposed in plain text over the network.
+
 The app can be made to listen on all interfaces for HTTPS requests by specifying HTTPS_PORT in the .env file, e.g.:
 ```
 HTTPS_PORT=3443
 ```
-If HTTPS_PORT is not specified, then the app will only listen for HTTP requests on localhost.
-
 The app can be made to listen on a specific interface for HTTPS requests by specifying HTTPS_HOST (the host name or IP address of the interface) in the .env file, e.g.:
 ```
 HTTPS_HOST=12.34.56.78
 ```
 If HTTPS_HOST is not specified, but HTTPS_PORT is specified, then the app will listen for HTTPS requests on all interfaces.
+
+###### Summary of listening states
+| Environment variable | Protocol | Listen On      | Port              |
+| :------------------: | :------: | :-------:      | :--:              |
+| [none]               | HTTP     | localhost      | 3000              |
+| HTTP_PORT            | HTTP     | localhost      | HTTP_PORT         |
+| HTTP_ALL_INTERFACES  | HTTP     | all interfaces | HTTP_PORT || 3000 |
+| HTTPS_PORT           | HTTPS    | all interfaces | HTTPS_PORT        |
+| HTTPS_HOST           | HTTPS    | HTTPS_HOST     | HTTPS_PORT        |
+
 
 ###### TLS Certificate
 For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  There are a few options:
