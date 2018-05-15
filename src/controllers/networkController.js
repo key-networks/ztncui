@@ -83,7 +83,7 @@ exports.network_create_post = async function(req, res) {
 
   const errors = req.validationErrors();
 
-  const name = { name: req.body.name };
+  let name = { name: req.body.name };
 
   if (errors) {
     res.render('network_create', {title: 'Create Network', nav: nav, name: name, errors: errors});
@@ -170,7 +170,7 @@ exports.name = async function(req, res) {
 
   const errors = req.validationErrors();
 
-  const name = { name: req.body.name };
+  let name = { name: req.body.name };
 
   if (errors) {
     try {
@@ -410,7 +410,7 @@ exports.member_detail = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     const member = await zt.member_detail(req.params.nwid, req.params.id);
-    const name = await storage.getItem(member.id);
+    let name = await storage.getItem(member.id);
     if (!name) name = '';
     member.name = name;
     nav.whence = '/controller/network/' + network.nwid + '/members';
@@ -431,7 +431,7 @@ exports.member_object = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     const member = await zt.member_detail(req.params.nwid, req.params.id);
-    const name = await storage.getItem(member.id);
+    let name = await storage.getItem(member.id);
     if (!name) name = '';
     member.name = name;
     nav.whence = '/controller/network/' + network.nwid + '/members';
@@ -672,7 +672,7 @@ exports.delete_ip = async function(req, res) {
     const network = await zt.network_detail(req.params.nwid);
     let member = await zt.member_detail(req.params.nwid, req.params.id);
     nav.whence = '/controller/network/' + network.nwid + '/members';
-    const name = await storage.getItem(member.id);
+    let name = await storage.getItem(member.id);
     if (!name) name = '';
     member.name = name;
     if (req.params.index) {
@@ -738,7 +738,7 @@ exports.assign_ip = async function(req, res) {
       member = await zt.ipAssignmentAdd(network.nwid, member.id, ipAssignment);
     }
 
-    const name = await storage.getItem(member.id);
+    let name = await storage.getItem(member.id);
     if (!name) name = '';
     member.name = name;
 
