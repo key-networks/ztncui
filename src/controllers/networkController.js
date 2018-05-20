@@ -350,6 +350,28 @@ exports.ipAssignmentPool_delete = async function (req, res) {
   }
 }
 
+// private POST
+exports.private = async function (req, res) {
+  const nav =
+    {
+      active: 'networks',
+      whence: ''
+    }
+
+  const private =
+    {
+      private: req.body.private
+    };
+
+  try {
+    const network = await zt.network_object(req.params.nwid, private);
+    nav.whence = '/controller/network/' + network.nwid;
+    res.render('private', {title: 'private', nav: nav, network: network});
+  } catch (err) {
+    res.render('private', {title: 'private', nav: nav, error: 'Error applying private for network ' + req.params.nwid + ': ' + err});
+  }
+}
+
 // v4AssignMode POST
 exports.v4AssignMode = async function (req, res) {
   const nav =

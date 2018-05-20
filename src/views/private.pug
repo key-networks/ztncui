@@ -1,0 +1,26 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  script.
+    $(function() {
+      $('.checkbox').on('click', function() {
+        $.post('', {'private': $('#privateCheckBox').is(':checked')});
+      });
+    });
+
+  form(method='POST' action='')
+    table.table.table-responsive.table-striped.table-hover
+      tr
+        td(width='3%')
+          input#privateCheckBox.checkbox(type='checkbox' checked=(network.private? true : false))
+        td Enable access control.  Warning: if you disable this, you will not be able to de-authorize members of the network.  Disable this only if you know what you are doing.
+
+  if errors
+    ul
+      for err in errors
+        li!= err.msg
