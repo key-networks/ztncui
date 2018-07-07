@@ -1,9 +1,9 @@
---- binding.gyp	2016-11-30 05:56:09.000000000 +0800
-+++ /home/srp/dev/node/ztncui/build/binding.gyp	2018-01-04 12:39:02.266078387 +0800
-@@ -42,6 +42,7 @@
-         "<!(node -e \"require('nan')\")",
-         "argon2/include"
+--- /tmp/binding.gyp	2018-07-07 14:38:23.884143337 +0800
++++ ../src/node_modules/argon2/binding.gyp	2018-07-07 14:39:09.684840870 +0800
+@@ -47,6 +47,7 @@
        ],
+       "cflags+": ["-Wno-cast-function-type"],
+       "include_dirs+": ["<!(node -e \"require('nan')\")"],
 +      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/8/libstdc++.a"],
        "dependencies": ["libargon2"],
        "configurations": {
