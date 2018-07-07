@@ -11,9 +11,15 @@ const zt = require('./zt');
 
 storage.initSync({dir: 'etc/storage'});
 
+var nav =
+  {
+    active: '',
+    whence: ''
+  }
+
 // ZT network controller home page
 exports.index = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'controller_home',
     }
@@ -29,7 +35,7 @@ exports.index = async function(req, res) {
 
 // Display list of all networks on this ZT network controller
 exports.network_list = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
     }
@@ -44,7 +50,7 @@ exports.network_list = async function(req, res) {
 
 // Display detail page for specific network
 exports.network_detail = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -61,7 +67,7 @@ exports.network_detail = async function(req, res) {
 
 // Display Network create form on GET
 exports.network_create_get = function(req, res) {
-  const nav =
+  nav =
     {
       active: 'add_network',
     }
@@ -71,7 +77,7 @@ exports.network_create_get = function(req, res) {
 
 // Handle Network create on POST
 exports.network_create_post = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'add_network',
     }
@@ -100,7 +106,7 @@ exports.network_create_post = async function(req, res) {
 
 // Display Network delete form on GET
 exports.network_delete_get = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -117,7 +123,7 @@ exports.network_delete_get = async function(req, res) {
 
 // Handle Network delete on POST
 exports.network_delete_post = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -133,7 +139,7 @@ exports.network_delete_post = async function(req, res) {
 
 // Network object GET
 exports.network_object = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -158,7 +164,7 @@ exports.network_object = async function(req, res) {
 
 // Handle Network rename form on POST
 exports.name = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -192,7 +198,7 @@ exports.name = async function(req, res) {
 
 // ipAssignmentPools POST
 exports.ipAssignmentPools = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -241,7 +247,7 @@ isValidPrefix = function(str, max) {
 
 // routes POST
 exports.routes = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -304,7 +310,7 @@ exports.routes = async function (req, res) {
 
 // route_delete GET
 exports.route_delete = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -328,7 +334,7 @@ exports.route_delete = async function (req, res) {
 
 // ipAssignmentPool_delete GET
 exports.ipAssignmentPool_delete = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -352,7 +358,7 @@ exports.ipAssignmentPool_delete = async function (req, res) {
 
 // private POST
 exports.private = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -374,7 +380,7 @@ exports.private = async function (req, res) {
 
 // v4AssignMode POST
 exports.v4AssignMode = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -396,7 +402,7 @@ exports.v4AssignMode = async function (req, res) {
 
 // v6AssignMode POST
 exports.v6AssignMode = async function (req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -423,7 +429,7 @@ exports.v6AssignMode = async function (req, res) {
 
 // Display detail page for specific member
 exports.member_detail = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -444,7 +450,7 @@ exports.member_detail = async function(req, res) {
 
 // Member object GET
 exports.member_object = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -473,7 +479,7 @@ exports.member_object = async function(req, res) {
 
 // Easy network setup GET
 exports.easy_get = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -489,7 +495,7 @@ exports.easy_get = async function(req, res) {
 
 // Easy network setup POST
 exports.easy_post = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -559,7 +565,7 @@ exports.easy_post = async function(req, res) {
 
 // Easy members auth GET or POST
 exports.members = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: '/controller/networks'
@@ -650,7 +656,7 @@ exports.members = async function(req, res) {
 
 // Member delete GET or POST
 exports.member_delete = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -684,7 +690,7 @@ exports.member_delete = async function(req, res) {
 
 // ipAssignment delete GET
 exports.delete_ip = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''
@@ -714,7 +720,7 @@ exports.delete_ip = async function(req, res) {
 
 // ipAssignments POST
 exports.assign_ip = async function(req, res) {
-  const nav =
+  nav =
     {
       active: 'networks',
       whence: ''

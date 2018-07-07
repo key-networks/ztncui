@@ -4,7 +4,7 @@
          "<!(node -e \"require('nan')\")",
          "argon2/include"
        ],
-+      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/7/libstdc++.a"],
++      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/8/libstdc++.a"],
        "dependencies": ["libargon2"],
        "configurations": {
          "Debug": {
