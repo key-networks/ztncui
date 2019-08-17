@@ -33,8 +33,9 @@ block net_content
               p [
               each elem in value
                 p {
-                each v2, k2 in elem
-                  p #{k2}: #{v2},
+                  - if (!!elem)
+                    each v2, k2 in elem
+                      p #{k2}: #{v2},
                 p },
               p ]
           - else

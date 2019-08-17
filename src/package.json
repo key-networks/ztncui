@@ -1,6 +1,6 @@
 {
   "name": "ztncui",
-  "version": "0.5.6",
+  "version": "0.5.8",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",

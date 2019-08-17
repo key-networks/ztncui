@@ -18,13 +18,13 @@ block body_content
           |  Key Networks
       .collapse.navbar-collapse(id='BarNav')
         ul.nav.navbar-nav
-          li(class=(nav.active === 'controller_home'? 'active' : ''))
+          li(class=(navigate.active === 'controller_home'? 'active' : ''))
             a(href='/controller') Home
-          li(class=(nav.active === 'users'? 'active' : ''))
+          li(class=(navigate.active === 'users'? 'active' : ''))
             a(href='/users') Users
-          li(class=(nav.active === 'networks'? 'active' : ''))
+          li(class=(navigate.active === 'networks'? 'active' : ''))
             a(href='/controller/networks') Networks
-          li(class=(nav.active === 'add_network'? 'active' : ''))
+          li(class=(navigate.active === 'add_network'? 'active' : ''))
             a(href='/controller/network/create') Add network
         ul.nav.navbar-nav.navbar-right
           li
