@@ -97,6 +97,22 @@ exports.network_create = async function(name) {
   }
 }
 
+exports.rules = async function(nwid, rule, action) {
+  const options = await init_options();
+  options.method = 'POST';
+
+  const network = await network_detail(nwid);
+  options.body = JSON.parse(rule.rules);
+
+  try {
+    const response = await got(ZT_ADDR + '/controller/network/'
+                                                              + nwid, options);
+    return response.body;
+  } catch(err) {
+    throw(err);
+  }
+}
+
 exports.network_delete = async function(nwid) {
   const options = await init_options();
   options.method = 'DELETE';
@@ -284,6 +300,7 @@ exports.member_delete = async function(nwid, id) {
 
 exports.network_easy_setup = async function(nwid,
                                             routes,
+                                            rules,
                                             ipAssignmentPools,
                                             v4AssignMode) {
   const options = await init_options();
@@ -292,6 +309,7 @@ exports.network_easy_setup = async function(nwid,
     {
       ipAssignmentPools: ipAssignmentPools,
       routes: routes,
+      rules: rules,
       v4AssignMode: v4AssignMode
     };
 

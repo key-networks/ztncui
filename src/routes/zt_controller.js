@@ -43,6 +43,9 @@ router.get('/network/:nwid/routes/:target_ip/:target_prefix/delete', restrict, n
 // POST request for routes
 router.post('/network/:nwid/routes', restrict, networkController.routes);
 
+// POST request for rules
+router.post('/network/:nwid/rules', restrict, networkController.rules);
+
 // POST request for private
 router.post('/network/:nwid/private', restrict, networkController.private);
 

@@ -329,6 +329,43 @@ exports.route_delete = async function (req, res) {
     res.render('routes', {title: 'routes', navigate: navigate, error: 'Error deleting route for network ' + req.params.nwid + ': ' + err});
   }
 }
+// rules POST
+exports.rules = async function (req, res) {
+  const navigate =
+    {
+      active: 'networks',
+      whence: ''
+    }
+
+  req.checkBody('rules', 'Invalid JSON Rules').isJSON();
+
+  const errors = req.validationErrors();
+
+  const rule =
+    {
+      rules: req.body.rules,
+    };
+
+  if (errors) {
+    try {
+      const network = await zt.network_detail(req.params.nwid);
+      navigate.whence = '/controller/network/' + network.nwid;
+      res.render('rules', {title: 'rules', navigate: navigate, rule: rule, network: network, errors: errors});
+    } catch (err) {
+      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error resolving network detaild '+err});
+    }
+  } else {
+    try {
+      const network = await zt.rules(req.params.nwid, rule, 'add');
+      navigate.whence = '/controller/network/' + network.nwid;
+      res.render('rules', {title: 'rules', navigate: navigate, rule: rule, network: network});
+    } catch (err) {
+      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error adding route for network ' + req.params.nwid + ': ' + err});
+    }
+  }
+
+}
+
 
 // ipAssignmentPool_delete GET
 exports.ipAssignmentPool_delete = async function (req, res) {
@@ -533,6 +570,10 @@ exports.easy_post = async function(req, res) {
       target: req.body.networkCIDR,
       via: null
     }];
+  const rules =
+    {
+      rules: req.body.rules
+    };
 
   const v4AssignMode =
     {
@@ -544,6 +585,7 @@ exports.easy_post = async function(req, res) {
       {
         ipAssignmentPools: ipAssignmentPools,
         routes: routes,
+        rules: rules,
         v4AssignMode: v4AssignMode
       };
 
@@ -552,6 +594,7 @@ exports.easy_post = async function(req, res) {
     try {
       const network = await zt.network_easy_setup(req.params.nwid,
                                                   routes,
+                                                  rules,
                                                   ipAssignmentPools,
                                                   v4AssignMode);
       res.render('network_easy', {title: 'Easy setup of network', navigate: navigate, network: network, message: 'Network setup succeeded'});
