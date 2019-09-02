@@ -681,8 +681,18 @@ exports.members = async function(req, res) {
     for (id in member_ids) {
       let member = await zt.member_detail(req.params.nwid, id);
       let name = await storage.getItem(member.id);
+      let peer = await zt.peer_detail(id);
       if (!name) name = '';
+      if (!peer) peer = '';
       member.name = name;
+      member.latency = peer.latency;
+      member.version = peer.version;
+      for (path in peer.paths){
+        if (peer.paths[path].preferred){
+	member.Paddress = peer.paths[path].address;
+	member.PlastReceive = peer.paths[path].lastReceive;
+        }
+      }
       members.push(member);
     }
 

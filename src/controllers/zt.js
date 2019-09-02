@@ -270,6 +270,18 @@ member_detail = async function(nwid, id) {
 }
 exports.member_detail = member_detail;
 
+peer_detail = async function(id) {
+  const options = await init_options();
+
+  try {
+    const response = await got(ZT_ADDR + '/peer/'
+                                            + id  , options);
+    return response.body;
+  } catch(err) {
+  }
+}
+exports.peer_detail = peer_detail;
+
 exports.member_object = async function(nwid, id, object) {
   const options = await init_options();
   options.method = 'POST';

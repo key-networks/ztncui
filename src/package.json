@@ -23,7 +23,8 @@
     "morgan": "~1.9.1",
     "node-persist": "^2.1.0",
     "pug": "^2.0.4",
-    "serve-favicon": "~2.5.0"
+    "serve-favicon": "~2.5.0",
+    "moment": "~2.24.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.4"

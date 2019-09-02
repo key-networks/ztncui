@@ -30,15 +30,23 @@ block net_content
       tr
         td(width='3%')
           = ''
-        td(width='20%')
+        td(width='15%')
           | Member name
         td(width='10%')
           | Member ID
         td(width='10%')
           | Authorized
-        td(width='10%')
+        td(width='12%')
           | Active bridge
-        td(width='47%')
+        td(width='3%')
+          | Version
+        td(width='15%')
+          | Path Address
+        td(width='15%')
+          | Last Time Seen
+        td(width='5%')
+          | Latency
+        td(width='17%')
           | IP assignment
       each member in members
         tr
@@ -49,11 +57,34 @@ block net_content
           td
             input.form-control.text(type='text' name=member.id value=member.name)
           td
-            a(href=url) #{member.id}
+            if  member.Paddress
+              a(href=url style={color:'green'}) #{member.id}
+            else
+              a(href=url style={color:'red'}) #{member.id}
           td
             input.authCheck(type='checkbox' value=member.id checked=(member.authorized? true : false))
           td
             input.bridgeCheck(type='checkbox' value=member.id checked=(member.activeBridge? true : false))
+          td
+            if member.version
+              p #{member.version}
+            else
+              p Unknown
+          td
+            if member.Paddress
+              p #{member.Paddress}
+            else
+              p Unknown
+          td
+            if member.PlastReceive
+              p #{moment(member.PlastReceive).fromNow()}
+            else
+              p Unknown
+          td
+             if (member.latency != -1)
+               p #{member.latency}
+             else
+               p Unknown
           td
             each ipAssignment in member.ipAssignments
               a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')

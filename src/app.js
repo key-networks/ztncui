@@ -21,6 +21,7 @@ const users = require('./routes/users');
 const zt_controller = require('./routes/zt_controller');
 
 const app = express();
+app.locals.moment = require('moment');
 
 const session_secret = Math.random().toString(36).substring(2,12);
 
