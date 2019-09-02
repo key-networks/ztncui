@@ -97,7 +97,7 @@ exports.network_create = async function(name) {
   }
 }
 
-exports.rules = async function(nwid, rule, action) {
+exports.rules = async function(nwid, rule) {
   const options = await init_options();
   options.method = 'POST';
 
