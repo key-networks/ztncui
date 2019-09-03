@@ -22,8 +22,6 @@ block content
           | Network ID
         th(width='7%')
           = ''
-        th(width='7%')
-          = ''
         th(width='10%')
           = ''
         th(width='50%')
@@ -37,8 +35,6 @@ block content
             a(href='/controller/network/' + network.nwid + '/name') #{network.name}
           td
             = network.nwid
-          td
-            a(href='/controller/network/' + network.nwid+'/rules') rules
           td
             a(href='/controller/network/' + network.nwid) detail
           td
