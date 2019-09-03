@@ -97,7 +97,7 @@ exports.network_create = async function(name) {
   }
 }
 
-exports.rules = async function(nwid, rule, action) {
+exports.rules = async function(nwid, rule) {
   const options = await init_options();
   options.method = 'POST';
 
@@ -300,7 +300,6 @@ exports.member_delete = async function(nwid, id) {
 
 exports.network_easy_setup = async function(nwid,
                                             routes,
-                                            rules,
                                             ipAssignmentPools,
                                             v4AssignMode) {
   const options = await init_options();
@@ -309,7 +308,6 @@ exports.network_easy_setup = async function(nwid,
     {
       ipAssignmentPools: ipAssignmentPools,
       routes: routes,
-      rules: rules,
       v4AssignMode: v4AssignMode
     };
 

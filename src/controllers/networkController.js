@@ -352,7 +352,7 @@ exports.rules = async function (req, res) {
       navigate.whence = '/controller/network/' + network.nwid;
       res.render('rules', {title: 'rules', navigate: navigate, rule: rule, network: network, errors: errors});
     } catch (err) {
-      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error resolving network detaild '+err});
+      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error resolving network detail for network ' + req.params.nwid + ': ' + err});
     }
   } else {
     try {
@@ -360,7 +360,7 @@ exports.rules = async function (req, res) {
       navigate.whence = '/controller/network/' + network.nwid;
       res.render('rules', {title: 'rules', navigate: navigate, rule: rule, network: network});
     } catch (err) {
-      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error adding route for network ' + req.params.nwid + ': ' + err});
+      res.render('rules', {title: 'rules', navigate: navigate, error: 'Error adding rule for network ' + req.params.nwid + ': ' + err});
     }
   }
 
