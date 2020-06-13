@@ -81,8 +81,6 @@ install -m 644 $BUILD_DIR/ztncui.service $STAGING_DIR/lib/systemd/system
 
 rm -f $BUILD_DIR/ztncui
 
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $STAGING_DIR/opt/key-networks/ztncui/etc/tls/privkey.pem -out $STAGING_DIR/opt/key-networks/ztncui/etc/tls/fullchain.pem -config $BUILD_DIR/openssl.cnf
-
 GENERAL_FPM_FLAGS="
   --name $NAME
   --version $VERSION
@@ -92,6 +90,7 @@ GENERAL_FPM_FLAGS="
   --package $PKG_DIR
   --directories /opt/key-networks
   --depends zerotier-one
+  --depends openssl
   --before-install before-install.sh
   --after-install after-install.sh
   --before-remove before-remove.sh
