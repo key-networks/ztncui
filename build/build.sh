@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 THISDIR=`pwd`
 if [ `basename $THISDIR`  != 'build' ]; then
   echo "Execute `basename $0` from the build directory"
@@ -22,20 +24,21 @@ LICENSE='GPLv3'
 
 BINDINGGYP='node_modules/argon2/binding.gyp'
 
+NODE_VER='v8'
+
 if [ ! -f  /usr/lib/gcc/x86_64-redhat-linux/10/libstdc++.a ]; then
   echo "You must install libstdc++-static"
   exit 1
 fi
 
-if [ ! -f  /usr/bin/rpmbuild ]; then
-  echo "You must install rpm-build"
-  exit 1
-fi
+DEPS="rpmbuild rpmsign npm node"
 
-if [ ! -f  /usr/bin/rpmsign ]; then
-  echo "You must install rpm-sign"
-  exit 1
-fi
+for DEP in ${DEPS}; do
+  if ! which ${DEP}; then
+    echo "Missing dependency ${DEP}"
+    exit 1
+  fi
+done
 
 rm -fr $STAGING_DIR && mkdir $STAGING_DIR
 rm -fr $PKG_DIR && mkdir $PKG_DIR
@@ -43,6 +46,13 @@ rm -fr $PKG_DIR && mkdir $PKG_DIR
 pushd .
 cd ../src
 pushd .
+
+NVER=`node --version`
+if [[ ${NVER%%.*} != ${NODE_VER} ]]; then
+  echo "Missing dependency node ${NODE_VER}"
+  exit 1
+fi
+
 npm install
 
 patch --forward --dry-run --silent $BINDINGGYP $BUILD_DIR/binding.gyp.patch
