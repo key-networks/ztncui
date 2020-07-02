@@ -53,6 +53,8 @@ if [[ ${NVER%%.*} != ${NODE_VER} ]]; then
   exit 1
 fi
 
+[[ -d ../src/node_modules ]] && rm -fr ../src/node_modules
+
 npm install
 
 patch --forward --dry-run --silent $BINDINGGYP $BUILD_DIR/binding.gyp.patch
