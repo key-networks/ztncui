@@ -51,7 +51,16 @@ exports.users_list = async function(req, res) {
 
   try {
     const users = await get_users();
-    res.render('users', { title: 'Admin users', navigate: navigate, message: 'List of users with admin priviledges', users: users });
+
+    if(user_session.role == 'admin') {
+      res.render('users', { title: 'Admin users', navigate: navigate, message: 'List of users with admin priviledges', users: users });
+    } else {
+      user = {
+        user_session : user_session
+      };
+      res.render('users', { title: 'Account', navigate: navigate, message: 'My Account', users: user });
+    }
+
   } catch (err) {
     res.render('users', { title: 'Admin users', navigate: navigate, message: 'Error', users: null, error: 'Error returning list of users: ' + err });
   }
@@ -133,15 +142,21 @@ exports.user_create_get = async function(req, res) {
     {
       active: 'create_user',
     }
+  
+  const user_roles = {
+    admin: 'admin',
+    member: 'member'
+  }
 
   const user =
     {
       name: null,
+      user_roles: user_roles,
       password1: null,
       password2: null
     };
 
-  res.render('password', { title: 'Create new admin user', navigate: navigate, user: user, readonly: false});
+    res.render('password', { title: 'Create new admin user', navigate: navigate, user: user, readonly: false});
 }
 
 exports.user_create_post = async function(req, res) {

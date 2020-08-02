@@ -9,6 +9,8 @@ const router = express.Router();
 const auth = require('../controllers/auth');
 const restrict = auth.restrict;
 const usersController = require('../controllers/usersController');
+const permission = require('../controllers/permission');
+const permit = permission.permit;
 
 // GET request for users
 router.get('/', restrict, usersController.users_list);
@@ -20,10 +22,10 @@ router.get('/:name/password', restrict, usersController.password_get);
 router.post('/:name/password', restrict, usersController.password_post);
 
 // GET request for user create
-router.get('/create', restrict, usersController.user_create_get);
+router.get('/create', restrict, permit('admin'), usersController.user_create_get);
 
 // POST request for user create
-router.post('/create', restrict, usersController.user_create_post);
+router.post('/create', restrict, permit('admin'), usersController.user_create_post);
 
 // GET request for user delete
 router.get('/:name/delete', restrict, usersController.user_delete);

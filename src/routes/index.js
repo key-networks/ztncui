@@ -39,6 +39,7 @@ router.post('/login', async function(req, res) {
       req.session.regenerate(function() {
         req.session.user = user;
         req.session.success = 'Authenticated as ' + user.name;
+        user_session = user;
         if (user.pass_set) {
           res.redirect('/controller');
         } else {

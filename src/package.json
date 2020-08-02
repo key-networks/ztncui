@@ -26,7 +26,7 @@
     "serve-favicon": "~2.5.0"
   },
   "devDependencies": {
-    "nodemon": "^1.17.4"
+    "nodemon": "^2.0.4"
   },
   "pkg": {
     "assets": [

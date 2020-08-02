@@ -19,6 +19,7 @@ const helmet = require('helmet');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const zt_controller = require('./routes/zt_controller');
+let user_session = null;
 
 const app = express();
 

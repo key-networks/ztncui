@@ -22,8 +22,9 @@ block body_content
             a(href='/controller') Home
           li(class=(navigate.active === 'users'? 'active' : ''))
             a(href='/users') Users
-          li(class=(navigate.active === 'create_user'? 'active' : ''))
-            a(href='/users/create') Create user
+          if user_session.role == 'admin'
+            li(class=(navigate.active === 'create_user'? 'active' : ''))
+              a(href='/users/create') Create user
         ul.nav.navbar-nav.navbar-right
           li
             a(href='/logout')
