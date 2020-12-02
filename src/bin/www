@@ -11,8 +11,8 @@ const https = require('https');
 const fs = require('fs');
 
 const options = {
-  cert: fs.readFileSync('etc/tls/fullchain.pem'),
-  key: fs.readFileSync('etc/tls/privkey.pem')
+  // cert: fs.readFileSync('etc/tls/fullchain.pem'),
+  // key: fs.readFileSync('etc/tls/privkey.pem')
 }
 
 /**
