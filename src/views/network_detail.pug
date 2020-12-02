@@ -11,7 +11,7 @@ block net_content
   else
     - if (members !== undefined)
       a(href='/controller/network/' + network.nwid + '/members')
-      h3 Members
+        h3 Members
       each value, key in members
         .row
           .col-sm-2
@@ -25,20 +25,8 @@ block net_content
         .col-sm-2
           a(href= network.nwid + '/' + key) #{key}:
         .col-sm-10
-          - if ((!!value ) && (value.constructor == Object))
-              p {
-              each v2, k2 in value
-                p #{k2}: #{v2},
-              p }
-          - else if ((!!value ) && (value.constructor == Array))
-              p [
-              each elem in value
-                p {
-                  - if (!!elem)
-                    each v2, k2 in elem
-                      p #{k2}: #{v2},
-                p },
-              p ]
+          - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
+              p #{JSON.stringify(value)}
           - else
               | #{value}
 
