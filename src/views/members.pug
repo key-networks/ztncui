@@ -11,15 +11,9 @@ block net_content
       $('.authCheck').on('click', function() {
         $.post('', {'id': this.value, 'auth': this.checked});
       });
-    });
-
-    $(function() {
       $('.bridgeCheck').on('click', function() {
         $.post('', {'id': this.value, 'activeBridge': this.checked});
       });
-    });
-
-    $(function() {
       $('.text').on('change', function() {
         $.post('', {'id': this.name, 'name': this.value});
       });
