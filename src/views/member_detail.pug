@@ -13,19 +13,8 @@ block net_content
       .col-sm-2
         a(href= member.address + '/'  + key) #{key}:
       .col-sm-10
-        - if ((!!value ) && (value.constructor == Object))
-            p {
-            each v2, k2 in value
-              p #{k2}: #{v2},
-            p }
-        - else if ((!!value ) && (value.constructor == Array))
-            p [
-            each elem in value
-              p {
-              each v2, k2 in elem
-                p #{k2}: #{v2},
-              p }
-            p ]
+        - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
+            p #{JSON.stringify(value)}
         - else
             | #{value}
 
