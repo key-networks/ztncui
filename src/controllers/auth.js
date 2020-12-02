@@ -7,7 +7,7 @@
 const argon2 = require('argon2');
 const usersController = require('../controllers/usersController');
 
-hash_check = async function(user, password) {
+const hash_check = async function(user, password) {
   let verified = false;
   try {
     var users = await usersController.get_users();

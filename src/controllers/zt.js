@@ -10,7 +10,7 @@ const token = require('./token');
 
 ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
 
-init_options = async function() {
+const init_options = async function() {
   let tok = null;
 
   try {
@@ -29,7 +29,7 @@ init_options = async function() {
   return options;
 }
 
-get_zt_address = async function() {
+const get_zt_address = async function() {
   const options = await init_options();
 
   try {
@@ -68,7 +68,7 @@ exports.network_list = async function() {
   return networks;
 }
 
-network_detail = async function(nwid) {
+const network_detail = async function(nwid) {
   const options = await init_options();
 
   try {
@@ -241,7 +241,7 @@ exports.members = async function(nwid) {
   }
 }
 
-member_detail = async function(nwid, id) {
+const member_detail = async function(nwid, id) {
   const options = await init_options();
 
   try {
