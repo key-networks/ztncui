@@ -10,6 +10,7 @@ block net_content
      b #{error}
   else
     - if (members !== undefined)
+      a(href='/controller/network/' + network.nwid + '/members')
       h3 Members
       each value, key in members
         .row
