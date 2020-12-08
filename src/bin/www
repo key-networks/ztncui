@@ -10,11 +10,6 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
-const options = {
-  cert: fs.readFileSync('etc/tls/fullchain.pem'),
-  key: fs.readFileSync('etc/tls/privkey.pem')
-}
-
 /**
  * Get ports from environment and store in Express.
  */
@@ -23,6 +18,12 @@ const http_port = normalizePort(process.env.HTTP_PORT || '3000');
 app.set('http_port', http_port);
 const https_port = normalizePort(process.env.HTTPS_PORT || null);
 app.set('https_port', https_port);
+
+/**
+ * Get interface address on which to listen for HTTP requests from env.
+ */
+const http_host = process.env.HTTP_HOST || null;
+app.set('http_host', http_host);
 
 /**
  * Get interface address on which to listen for HTTPS requests from env.
@@ -44,25 +45,33 @@ app.set('https_host', https_host);
 const http_all_interfaces = process.env.HTTP_ALL_INTERFACES || null;
 if (http_all_interfaces) {
     console.log('Listening for HTTP requests on port ' + http_port + ' on all interfaces');
-    app.listen(http_port);  
+    app.listen(http_port);
+} else if (http_host) {
+    console.log('Listening for HTTP requests on port ' + http_port + ' on ' + http_host);
+    app.listen(http_port, http_host);
 } else {
     console.log('Listening for HTTP requests on port ' + http_port + ' on localhost');
     app.listen(http_port, 'localhost');
 }
 
-const server = https.createServer(options, app);
-
 if (https_port) {
+  const options = {
+    cert: fs.readFileSync('etc/tls/fullchain.pem'),
+    key: fs.readFileSync('etc/tls/privkey.pem')
+  }
+  
+  const server = https.createServer(options, app);
+
   if (https_host) {
     console.log('Listening for HTTPS requests on port ' + https_port + ' on address ' + https_host);
   } else {
     console.log('Listening for HTTPS requests on port ' + https_port + ' on all interfaces');
   }
   server.listen(https_port, https_host);
-}
 
-server.on('error', onError);
-server.on('listening', onListening);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
 
 /**
  * Normalize a port into a number, string, or false.
