@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 THISDIR=`pwd`
 if [ `basename $THISDIR`  != 'build' ]; then
   echo "Execute `basename $0` from the build directory"
@@ -22,20 +24,21 @@ LICENSE='GPLv3'
 
 BINDINGGYP='node_modules/argon2/binding.gyp'
 
-if [ ! -f  /usr/lib/gcc/x86_64-redhat-linux/9/libstdc++.a ]; then
+NODE_VER='v8'
+
+if [ ! -f  /usr/lib/gcc/x86_64-redhat-linux/10/libstdc++.a ]; then
   echo "You must install libstdc++-static"
   exit 1
 fi
 
-if [ ! -f  /usr/bin/rpmbuild ]; then
-  echo "You must install rpm-build"
-  exit 1
-fi
+DEPS="rpmbuild rpmsign npm node"
 
-if [ ! -f  /usr/bin/rpmsign ]; then
-  echo "You must install rpm-sign"
-  exit 1
-fi
+for DEP in ${DEPS}; do
+  if ! which ${DEP}; then
+    echo "Missing dependency ${DEP}"
+    exit 1
+  fi
+done
 
 rm -fr $STAGING_DIR && mkdir $STAGING_DIR
 rm -fr $PKG_DIR && mkdir $PKG_DIR
@@ -43,6 +46,15 @@ rm -fr $PKG_DIR && mkdir $PKG_DIR
 pushd .
 cd ../src
 pushd .
+
+NVER=`node --version`
+if [[ ${NVER%%.*} != ${NODE_VER} ]]; then
+  echo "Missing dependency node ${NODE_VER}"
+  exit 1
+fi
+
+[[ -d ../src/node_modules ]] && rm -fr ../src/node_modules
+
 npm install
 
 patch --forward --dry-run --silent $BINDINGGYP $BUILD_DIR/binding.gyp.patch
@@ -81,8 +93,6 @@ install -m 644 $BUILD_DIR/ztncui.service $STAGING_DIR/lib/systemd/system
 
 rm -f $BUILD_DIR/ztncui
 
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout $STAGING_DIR/opt/key-networks/ztncui/etc/tls/privkey.pem -out $STAGING_DIR/opt/key-networks/ztncui/etc/tls/fullchain.pem -config $BUILD_DIR/openssl.cnf
-
 GENERAL_FPM_FLAGS="
   --name $NAME
   --version $VERSION
@@ -92,6 +102,7 @@ GENERAL_FPM_FLAGS="
   --package $PKG_DIR
   --directories /opt/key-networks
   --depends zerotier-one
+  --depends openssl
   --before-install before-install.sh
   --after-install after-install.sh
   --before-remove before-remove.sh
