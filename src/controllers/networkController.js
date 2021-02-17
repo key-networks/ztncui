@@ -12,6 +12,34 @@ const util = require('util');
 
 storage.initSync({dir: 'etc/storage'});
 
+async function get_network_with_members(nwid) {
+  const [network, member_ids] = await Promise.all([
+    zt.network_detail(nwid),
+    zt.members(nwid)
+  ]);
+  const members = await Promise.all(
+    Object.keys(member_ids)
+      .map(id => Promise.all([
+        zt.member_detail(nwid, id),
+        storage.getItem(id)
+      ]))
+  ).then(results => results.map(([member, name]) => {
+    member.name = name || '';
+    return member;
+  }));
+  return {network, members};
+}
+
+async function get_network_member(nwid, memberid) {
+  const [network, member, name] = await Promise.all([
+    zt.network_detail(nwid),
+    zt.member_detail(nwid, memberid),
+    storage.getItem(memberid)
+  ]);
+  member.name = name || '';
+  return {network, member};
+}
+
 // ZT network controller home page
 exports.index = async function(req, res) {
   const navigate =
@@ -52,14 +80,7 @@ exports.network_detail = async function(req, res) {
     }
 
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member_ids = await zt.members(req.params.nwid);
-    const members = [];
-    for (id in member_ids) {
-      let member = await zt.member_detail(req.params.nwid, id);
-      member.name = await storage.getItem(member.id) || '';
-      members.push(member);
-    }
+    const {network, members} = await get_network_with_members(req.params.nwid);
     res.render('network_detail', {title: 'Network ' + network.name, navigate: navigate, network: network, members: members});
   } catch (err) {
     res.render('network_detail', {title: 'Detail for network', navigate: navigate, error: 'Error resolving detail for network ' + req.params.nwid + ': ' + err});
@@ -437,9 +458,7 @@ exports.member_detail = async function(req, res) {
     }
 
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member = await zt.member_detail(req.params.nwid, req.params.id);
-    member.name = await storage.getItem(member.id) || '';
+    const {network, member} = await get_network_member(req.params.nwid, req.params.id);
     navigate.whence = '/controller/network/' + network.nwid + '#members';
     res.render('member_detail', {title: 'Network member detail', navigate: navigate, network: network, member: member});
   } catch (err) {
@@ -456,9 +475,7 @@ exports.member_object = async function(req, res) {
     }
 
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member = await zt.member_detail(req.params.nwid, req.params.id);
-    member.name = await storage.getItem(member.id) || '';
+    const {network, member} = await get_network_member(req.params.nwid, req.params.id);
     navigate.whence = '/controller/network/' + network.nwid + '#members';
     res.render(req.params.object, {title: req.params.object, navigate: navigate, network: network, member: member}, function(err, html) {
       if (err) {
