@@ -51,9 +51,6 @@ exports.network_detail = async function(req, res) {
       whence: '/controller/networks'
     }
 
-  console.log('NAVIGATE = ' + navigate.toString());
-  console.log(util.inspect(navigate, false, null, true /* enable colors */))
-
   try {
     const network = await zt.network_detail(req.params.nwid);
     const member_ids = await zt.members(req.params.nwid);
