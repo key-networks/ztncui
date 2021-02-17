@@ -5,23 +5,12 @@
 
 extends head_layout
 
-block body_content
-  nav.navbar.navbar-inverse.navbar-fixed-top
-    .container-fluid
-      .navbar-header
-        button.navbar-toggle(type='button' data-toggle='collapse' data-target='#BarNav')
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-        a.navbar-brand(href='https://zt.yuuza.net' target='_blank')
-          | ZT.Yuuza
-      .collapse.navbar-collapse(id='BarNav')
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='/login')
-              span.glyphicon.glyphicon-log-in
-              |  Login
+block nav_login
+  a(href='/login')
+    span.glyphicon.glyphicon-log-in
+    |  Login
 
+block body_content
   .container(style='margin-top:50px')
     .row
       .col-sm-12

@@ -5,32 +5,13 @@
 
 extends head_layout
 
-mixin nav_item(name, displayName, href)
-  li(class=((navigate && navigate.active === name) ? 'active' : ''))
-    a(href=href) #{displayName}
+block nav_items
+  +nav_item('controller_home', 'Home', '/controller')
+  +nav_item('users', 'Users', '/users')
+  +nav_item('networks', 'Networks', '/controller/networks')
+  +nav_item('add_network', 'Add network', '/controller/network/create')
 
 block body_content
-  nav.navbar.navbar-inverse.navbar-fixed-top
-    .container-fluid
-      .navbar-header
-        button.navbar-toggle(type='button' data-toggle='collapse' data-target='#BarNav')
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-        a.navbar-brand(href='https://zt.yuuza.net' target='_blank')
-          | ZT.Yuuza
-      .collapse.navbar-collapse(id='BarNav')
-        ul.nav.navbar-nav
-          +nav_item('controller_home', 'Home', '/controller')
-          +nav_item('users', 'Users', '/users')
-          +nav_item('networks', 'Networks', '/controller/networks')
-          +nav_item('add_network', 'Add network', '/controller/network/create')
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='/logout')
-              span.glyphicon.glyphicon-log-out
-              |  Logout
-
   .container(style='margin: 50px auto 20px')
     .row
       .col-sm-12
