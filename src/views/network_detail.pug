@@ -32,6 +32,19 @@ block net_content
     a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/v6AssignMode') role='button') IPv6 Assign Mode
 
     if (members !== undefined)
+      script.
+        $(function() {
+          const url = "/controller/network/#{network.nwid}/members";
+          $('.authCheck').on('click', function() {
+            $.post(url, {'id': this.value, 'auth': this.checked});
+          });
+          $('.bridgeCheck').on('click', function() {
+            $.post(url, {'id': this.value, 'activeBridge': this.checked});
+          });
+          $('.text').on('change', function() {
+            $.post(url, {'id': this.name, 'name': this.value});
+          });
+        });
       h3#members Members (#{members.length})
       form(method='POST' action='')
         table.table.table-responsive.table-striped.table-hover
