@@ -5,29 +5,87 @@
 
 extends network_layout
 
+block title
+//- don't display that title
+
 block net_content
   if error
      b #{error}
   else
-    - if (members !== undefined)
-      a(href='/controller/network/' + network.nwid + '/members')
-        h3 Members
-      each value, key in members
-        .row
-          .col-sm-2
-            a(href= network.nwid + '/member/' + key) #{key}
-          .col-sm-10
-            | revision: #{value}
+    form(method='POST' action=(network.nwid + '/name'))
 
-    h3= title
+      .form-group.row
+        .col-sm-2
+          label(for='name') Name:
+        .col-sm-8.col-xs-9
+          input#name.form-control(type='text' name='name' placeholder='New network name' value=(undefined===network.name? '' : network.name))
+        .col-sm-2.col-xs-3
+          button.btn.btn-primary(type='submit') Submit
+
+    
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/private') role='button')
+      = network.private ? "Private" : "Public"
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/easy') role='button') Easy setup
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/routes') role='button') Routes
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/ipAssignmentPools') role='button') Assignment Pools
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/v4AssignMode') role='button') IPv4 Assign Mode
+    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/v6AssignMode') role='button') IPv6 Assign Mode
+
+    if (members !== undefined)
+      h3#members Members (#{members.length})
+      form(method='POST' action='')
+        table.table.table-responsive.table-striped.table-hover
+          tr
+            td(width='3%')
+              = ''
+            td(width='20%')
+              | Member name
+            td(width='10%')
+              | Member ID
+            td(width='10%')
+              | Authorized
+            td(width='10%')
+              | Active bridge
+            td(width='47%')
+              | IP assignment
+          each member in members
+            tr
+              - let url = '/controller/network/' + network.nwid + '/member/' + member.id
+              td
+                a(href=url + '/delete')
+                  i.glyphicon.glyphicon-trash
+              td
+                input.form-control.text(type='text' name=member.id value=member.name)
+              td
+                a(href=url) #{member.id}
+              td
+                input.authCheck(type='checkbox' value=member.id checked=(member.authorized? true : false))
+              td
+                input.bridgeCheck(type='checkbox' value=member.id checked=(member.activeBridge? true : false))
+              td
+                each ipAssignment in member.ipAssignments
+                  a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                    each digit in ipAssignment
+                      = digit
+                    = ' '
+                else
+                  a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                    | IP assignment
+          else
+            .alert.alert-info
+              strong There are no members on this network - invite users to join #{network.nwid}
+
+    a.btn.btn-default(href='' name='refresh' role='button') Refresh
+
+    h3#detail Detail for network
     each value, key in network
       .row
         .col-sm-2
           a(href= network.nwid + '/' + key) #{key}:
         .col-sm-10
           - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
-              p #{JSON.stringify(value)}
+              code #{JSON.stringify(value)}
           - else
-              | #{value}
+              code #{value}
 
     a.btn.btn-default(href='/controller/networks' name='networks' role='button') Networks

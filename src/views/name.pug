@@ -18,7 +18,7 @@ block net_content
       .col-sm-12
         button.btn.btn-primary(type='submit') Submit
         = ' '
-        a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+        a.btn.btn-default(href=('/controller/network/' + network.nwid) name='cancel' role='button') Cancel
 
     if errors
       .row

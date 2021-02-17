@@ -20,11 +20,11 @@ block content
           | Network name
         th(width='10%')
           | Network ID
-        th(width='7%')
+        th(width='15%')
           = ''
-        th(width='10%')
+        th(width='20%')
           = ''
-        th(width='50%')
+        th(width='25%')
           = ''
       each network in networks
         tr
@@ -32,15 +32,15 @@ block content
             a(href='/controller/network/' + network.nwid + '/delete')
               i.glyphicon.glyphicon-trash
           td
-            a(href='/controller/network/' + network.nwid + '/name') #{network.name}
+            a(href='/controller/network/' + network.nwid) #{network.name}
           td
             = network.nwid
           td
-            a(href='/controller/network/' + network.nwid) detail
+            a(href='/controller/network/' + network.nwid + "#detail") detail
           td
             a(href='/controller/network/' + network.nwid + '/easy') easy setup
           td
-            a(href='/controller/network/' + network.nwid + '/members') members
+            a(href='/controller/network/' + network.nwid + "#members") members
 
       else
         .alert.alert-info

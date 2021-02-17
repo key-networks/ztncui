@@ -5,6 +5,10 @@
 
 extends head_layout
 
+mixin nav_item(name, displayName, href)
+  li(class=((navigate && navigate.active === name) ? 'active' : ''))
+    a(href=href) #{displayName}
+
 block body_content
   nav.navbar.navbar-inverse.navbar-fixed-top
     .container-fluid
@@ -17,14 +21,10 @@ block body_content
           | ZT.Yuuza
       .collapse.navbar-collapse(id='BarNav')
         ul.nav.navbar-nav
-          li(class=(navigate.active === 'controller_home'? 'active' : ''))
-            a(href='/controller') Home
-          li(class=(navigate.active === 'users'? 'active' : ''))
-            a(href='/users') Users
-          li(class=(navigate.active === 'networks'? 'active' : ''))
-            a(href='/controller/networks') Networks
-          li(class=(navigate.active === 'add_network'? 'active' : ''))
-            a(href='/controller/network/create') Add network
+          +nav_item('controller_home', 'Home', '/controller')
+          +nav_item('users', 'Users', '/users')
+          +nav_item('networks', 'Networks', '/controller/networks')
+          +nav_item('add_network', 'Add network', '/controller/network/create')
         ul.nav.navbar-nav.navbar-right
           li
             a(href='/logout')

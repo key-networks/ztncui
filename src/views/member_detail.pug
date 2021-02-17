@@ -6,7 +6,8 @@
 extends network_layout
 
 block net_content
-  h4 for member #{member.name} (#{member.address})
+  h4
+    | for member #{member.name} (#{member.address}) in network
 
   each value, key in member
     .row
@@ -14,8 +15,8 @@ block net_content
         a(href= member.address + '/'  + key) #{key}:
       .col-sm-10
         - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
-            p #{JSON.stringify(value)}
+            code #{JSON.stringify(value)}
         - else
-            | #{value}
+            code #{value}
 
-  a.btn.btn-default(href='../members' name='networks' role='button') Members
+  a.btn.btn-default(href=('../../' + member.nwid + "#members") name='networks' role='button') Members

@@ -13,12 +13,10 @@ block content
     | network controller UI by 
     a(href='https://key-networks.com' target='_blank') Key Networks
 
-  h3 Network controller details
-
   if error
      b #{error}
   else
-    h4 This network controller has a ZeroTier address of <b>#{zt_address}</b>
-
+    h4 This network controller has a ZeroTier address of <b>#{zt_status.address}</b>
+    h4 ZeroTier version <b>#{zt_status.version}</b>
     h4
       a(href='/controller/networks') List all networks on this network controller

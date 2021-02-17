@@ -80,7 +80,7 @@ block net_content
     .form-group(style='padding-top: 10px')
       button.btn.btn-primary(type='submit') Submit
       = ' '
-      a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+      a.btn.btn-default(href=('/controller/network/' + network.nwid) name='cancel' role='button') Cancel
 
     if errors
       ul

@@ -12,9 +12,12 @@ block content
     .row
       .col-sm-10
         h2
+          | Network 
           a(href='/controller/network/' + network.nwid) #{network.name}
           |  (#{network.nwid}):
-        h3= title
+        block title
+          if title
+            h3= title
 
       .col-sm-2
         h2.right

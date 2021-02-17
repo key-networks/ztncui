@@ -29,15 +29,20 @@ const init_options = async function() {
   return options;
 }
 
-const get_zt_address = async function() {
+const get_zt_status = async function() {
   const options = await init_options();
 
   try {
     const response = await got(ZT_ADDR + '/status', options);
-    return response.body.address;
+    return response.body;
   } catch(err) {
     throw(err);
   }
+}
+exports.get_zt_status = get_zt_status;
+
+const get_zt_address = async function() {
+  return (await get_zt_status()).address;
 }
 exports.get_zt_address = get_zt_address;
 
