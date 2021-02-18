@@ -9,11 +9,11 @@ block title
 //- don't display that title
 
 block net_content
+  - const nwurl = '/controller/network/' + network.nwid;
   if error
      b #{error}
   else
-    form(method='POST' action=(network.nwid + '/name'))
-
+    form(method='POST' action=(nwurl + '/name'))
       .form-group.row
         .col-sm-2
           label(for='name') Name:
@@ -22,19 +22,19 @@ block net_content
         .col-sm-2.col-xs-3
           button.btn.btn-primary(type='submit') Submit
 
-    
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/private') role='button')
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/private') role='button')
       = network.private ? "Private" : "Public"
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/easy') role='button') Easy setup
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/routes') role='button') Routes
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/ipAssignmentPools') role='button') Assignment Pools
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/v4AssignMode') role='button') IPv4 Assign Mode
-    a.btn.btn-primary(style="margin: 5px" href=(network.nwid + '/v6AssignMode') role='button') IPv6 Assign Mode
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/easy') role='button') Easy setup
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/routes') role='button') Routes
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/ipAssignmentPools') role='button') Assignment Pools
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/v4AssignMode') role='button') IPv4 Assign Mode
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/v6AssignMode') role='button') IPv6 Assign Mode
+    a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/dns') role='button') DNS
 
     if (members !== undefined)
       script.
         $(function() {
-          const url = "/controller/network/#{network.nwid}/members";
+          const url = "#{nwurl}/members";
           $('.authCheck').on('click', function() {
             $.post(url, {'id': this.value, 'auth': this.checked});
           });
@@ -63,7 +63,7 @@ block net_content
               | IP assignment
           each member in members
             tr
-              - let url = '/controller/network/' + network.nwid + '/member/' + member.id
+              - const url = nwurl + '/member/' + member.id
               td
                 a(href=url + '/delete')
                   i.glyphicon.glyphicon-trash
@@ -77,12 +77,12 @@ block net_content
                 input.bridgeCheck(type='checkbox' value=member.id checked=(member.activeBridge? true : false))
               td
                 each ipAssignment in member.ipAssignments
-                  a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                  a(href=nwurl + '/member/' + member.id + '/ipAssignments')
                     each digit in ipAssignment
                       = digit
                     = ' '
                 else
-                  a(href='/controller/network/' + network.nwid + '/member/' + member.id + '/ipAssignments')
+                  a(href=nwurl + '/member/' + member.id + '/ipAssignments')
                     | IP assignment
           else
             .alert.alert-info

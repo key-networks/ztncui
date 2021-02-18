@@ -443,6 +443,30 @@ exports.v6AssignMode = async function (req, res) {
   }
 }
 
+// dns POST
+exports.dns = async function (req, res) {
+  const navigate = {
+    active: 'networks',
+    whence: ''
+  };
+  const dns = {
+    dns: {
+      domain: req.body.domain,
+      servers: req.body.servers
+        .split('\n')
+        .map(x => x.trim())
+        .filter(x => !!x)
+    }
+  };
+  try {
+    const network = await zt.network_object(req.params.nwid, dns);
+    navigate.whence = '/controller/network/' + network.nwid;
+    res.render('dns', {title: 'dns', navigate: navigate, network: network});
+  } catch (err) {
+    res.render('dns', {title: 'dns', navigate: navigate, error: 'Error updating dns for network ' + req.params.nwid + ': ' + err});
+  }
+}
+
 // Display detail page for specific member
 exports.member_detail = async function(req, res) {
   const navigate =
