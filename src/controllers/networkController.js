@@ -201,21 +201,15 @@ exports.name = async function(req, res) {
   let name = { name: req.body.name };
 
   if (errors) {
-    try {
-      const network = await zt.network_detail(req.params.nwid);
-      res.render('name', {title: 'Rename network', navigate: navigate, network: network, name: name, errors: errors});
-    } catch (err) {
-      res.render('name', {title: 'Rename network', navigate: navigate, error: 'Error resolving network detail for network ' + req.params.nwid + ': ' + err});
-    }
+    console.error("network name validation errors", errors);
   } else {
     try {
       const network = await zt.network_object(req.params.nwid, name);
-      res.redirect('/controller/network/' + req.params.nwid);
     } catch ( err) {
-      res.render('name', {title: 'Rename network', navigate: navigate, error: 'Error renaming network ' + req.params.nwid + ': ' + err});
+      console.error("Error renaming network " + req.params.nwid, err);
     }
   }
-
+  res.redirect('/controller/network/' + req.params.nwid);
 };
 
 // ipAssignmentPools POST
@@ -577,7 +571,7 @@ exports.easy_post = async function(req, res) {
   }
 }
 
-// Easy members auth GET or POST
+// Easy members auth POST
 exports.members = async function(req, res) {
   const navigate =
     {
@@ -645,24 +639,6 @@ exports.members = async function(req, res) {
         }
       }
     }
-  }
-
-  try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member_ids = await zt.members(req.params.nwid);
-    const members = [];
-    for (id in member_ids) {
-      let member = await zt.member_detail(req.params.nwid, id);
-      member.name = await storage.getItem(member.id) | '';
-      members.push(member);
-    }
-
-    res.render('members', {title: 'Members of this network', navigate: navigate,
-                          network: network, members: members, errors: errors});
-  } catch (err) {
-    res.render('members', {title: 'Members of this network', navigate: navigate,
-      error: 'Error resolving detail for network ' + req.params.nwid
-                                                              + ': ' + err});
   }
 }
 
