@@ -449,15 +449,20 @@ exports.dns = async function (req, res) {
     active: 'networks',
     whence: ''
   };
+
   const dns = {
     dns: {
       domain: req.body.domain,
       servers: req.body.servers
         .split('\n')
         .map(x => x.trim())
-        .filter(x => !!x)
+        .filter(ip =>
+          new ipaddr.Address4(ip).isValid() ||
+          new ipaddr.Address6(ip).isValid()
+        )
     }
   };
+
   try {
     const network = await zt.network_object(req.params.nwid, dns);
     navigate.whence = '/controller/network/' + network.nwid;
