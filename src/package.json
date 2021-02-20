@@ -19,7 +19,7 @@
     "got": "^7.1.0",
     "helmet": "^3.23.0",
     "ip-address": "^5.8.9",
-    "jquery": "^3.5.1",
+    "jquery": "~3.4.1",
     "morgan": "~1.9.1",
     "node-persist": "^2.1.0",
     "pug": "^2.0.4",
