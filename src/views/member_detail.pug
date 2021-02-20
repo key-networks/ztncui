@@ -12,11 +12,12 @@ block net_content
   each value, key in member
     .row
       .col-sm-2
-        a(href= member.address + '/'  + key) #{key}:
+        a(href=('/controller/network/' + member.nwid + '/member/' + member.address + '/' + key)) #{key}:
       .col-sm-10
         - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
             code #{JSON.stringify(value)}
         - else
             code #{value}
 
-  a.btn.btn-default(href=('../../' + member.nwid + "#members") name='networks' role='button') Members
+  a.btn.btn-default(href=('/controller/network/' + member.nwid + "#members") name='networks' role='button' style='margin-top: 10px;')
+    | Members
