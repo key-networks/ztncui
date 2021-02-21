@@ -11,10 +11,11 @@ block content
   else
     .row
       .col-sm-10
-        h2
-          | Network 
-          a(href='/controller/network/' + network.nwid) #{network.name}
-          |  (#{network.nwid}):
+        block network_title
+          h2
+            | Network 
+            a(href='/controller/network/' + network.nwid) #{network.name}
+            |  (#{network.nwid}):
         block title
           if title
             h3= title
