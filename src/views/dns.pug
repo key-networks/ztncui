@@ -7,6 +7,28 @@ extends network_layout
 
 block net_content
   - const dns = network.dns || {};
+  if (!dns.domain && !(dns.servers && dns.servers.length > 0))
+    .row
+      .col-sm-12
+        b No DNS configuration on this network.
+  else
+    .row
+      .col-sm-2
+        b Domain:
+      .col-sm-10
+        p= dns.domain
+    .row
+      .col-sm-2
+        b Servers:
+      .col-sm-10
+        .row
+          each server in dns.servers
+            .col-sm-12= server
+
+  .row
+    .col-sm-12
+      h3 Change DNS configuration:
+
   form(method='POST' action='')
     .form-group.row
       .col-sm-12
