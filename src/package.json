@@ -32,7 +32,8 @@
     "assets": [
       "views/*",
       "public/**/*",
-      "etc/**/*"
+      "etc/**/*",
+      "node_modules/jquery/dist/jquery.min.js"
     ]
   }
 }
