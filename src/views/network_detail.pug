@@ -128,6 +128,8 @@ block net_content
                 else
                   span(style='color: orange;')
                     | RELAY (v#{peer.version})
+              else if (member.id == zt_address)
+                span(style='color: green;') CONTROLLER
               else
                 span(style='color: red;') OFFLINE
             td

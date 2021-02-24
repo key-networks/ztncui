@@ -88,8 +88,14 @@ exports.network_detail = async function(req, res) {
     }
 
   try {
-    const {network, members} = await get_network_with_members(req.params.nwid);
-    res.render('network_detail', {title: 'Network ' + network.name, navigate: navigate, network: network, members: members});
+    const [
+      {network, members},
+      zt_address
+    ] = await Promise.all([
+      get_network_with_members(req.params.nwid),
+      zt.get_zt_address()
+    ]);
+    res.render('network_detail', {title: 'Network ' + network.name, navigate: navigate, network: network, members: members, zt_address: zt_address});
   } catch (err) {
     res.render('network_detail', {title: 'Detail for network', navigate: navigate, error: 'Error resolving detail for network ' + req.params.nwid + ': ' + err});
   }
