@@ -90,9 +90,14 @@ block net_content
             | Authorized
           td(width='10%')
             | Active bridge
-          td(width='47%')
+          td(width='17%')
             | IP assignment
+          td(width='17%')
+            | Peer status
+          td(width='13%')
+            | Peer latency
         each member in members
+          - const peer = member.peer;
           tr
             - const url = nwurl + '/member/' + member.id
             td
@@ -115,6 +120,19 @@ block net_content
               else
                 a(href=nwurl + '/member/' + member.id + '/ipAssignments')
                   | IP assignment
+            td
+              if (peer && peer.latency != -1 && peer.versionMajor != -1)
+                if (peer.latency != -1)
+                  span(style='color: green;')
+                    | ONLINE (v#{peer.version})
+                else
+                  span(style='color: orange;')
+                    | RELAY (v#{peer.version})
+              else
+                span(style='color: red;') OFFLINE
+            td
+              if (peer && peer.latency != -1)
+                | #{peer.latency} ms
         else
           .alert.alert-info
             strong There are no members on this network - invite users to join #{network.nwid}
