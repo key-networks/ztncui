@@ -13,30 +13,38 @@ const util = require('util');
 storage.initSync({dir: 'etc/storage'});
 
 async function get_network_with_members(nwid) {
-  const [network, member_ids] = await Promise.all([
+  const [network, peers, members] = await Promise.all([
     zt.network_detail(nwid),
+    zt.peers(),
     zt.members(nwid)
+      .then(member_ids =>
+        Promise.all(
+          Object.keys(member_ids)
+            .map(id => Promise.all([
+              zt.member_detail(nwid, id),
+              storage.getItem(id)
+            ]))
+        )
+      ).then(results => results.map(([member, name]) => {
+        member.name = name || '';
+        return member;
+      }))
   ]);
-  const members = await Promise.all(
-    Object.keys(member_ids)
-      .map(id => Promise.all([
-        zt.member_detail(nwid, id),
-        storage.getItem(id)
-      ]))
-  ).then(results => results.map(([member, name]) => {
-    member.name = name || '';
-    return member;
-  }));
+  for (const member of members) {
+    member.peer = peers.find(x => x.address === member.address);
+  }
   return {network, members};
 }
 
 async function get_network_member(nwid, memberid) {
-  const [network, member, name] = await Promise.all([
+  const [network, member, peer, name] = await Promise.all([
     zt.network_detail(nwid),
     zt.member_detail(nwid, memberid),
+    zt.peer(memberid),
     storage.getItem(memberid)
   ]);
   member.name = name || '';
+  member.peer = peer;
   return {network, member};
 }
 
@@ -485,7 +493,8 @@ exports.member_detail = async function(req, res) {
     navigate.whence = '/controller/network/' + network.nwid + '#members';
     res.render('member_detail', {title: 'Network member detail', navigate: navigate, network: network, member: member});
   } catch (err) {
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
+    console.error(err);
+    res.render('error', {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
   }
 };
 

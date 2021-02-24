@@ -8,7 +8,7 @@ const got = require('got');
 const ipaddr = require('ip-address');
 const token = require('./token');
 
-ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
+const ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
 
 const init_options = async function() {
   let tok = null;
@@ -306,5 +306,24 @@ exports.network_easy_setup = async function(nwid,
     return response.body;
   } catch(err) {
     throw(err);
+  }
+}
+
+exports.peers = async function() {
+  const options = await init_options();
+  const response = await got(ZT_ADDR + '/peer', options);
+  return response.body;
+}
+
+exports.peer = async function(id) {
+  const options = await init_options();
+  try {
+    const response = await got(ZT_ADDR + '/peer/' + id, options);
+    return response.body;
+  } catch (error) {
+    if (error instanceof got.HTTPError && error.statusCode == 404) {
+      return null;
+    }
+    throw error;
   }
 }
