@@ -7,6 +7,12 @@ mixin nav_item(name, displayName, href)
   li(class=((navigate && navigate.active === name) ? 'active' : ''))
     a(href=href) #{displayName}
 
+mixin json_value(value)
+  - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
+      code(style='white-space: pre;')= JSON.stringify(value, null, 2)
+  - else
+      code= value
+
 doctype html
 html(lang='en')
   head

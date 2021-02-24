@@ -123,13 +123,10 @@ block net_content
 
   h3#detail Detail for network
   each value, key in network
-    .row
+    .row(style='margin: 5px 0;')
       .col-sm-2
         a(href= network.nwid + '/' + key) #{key}:
       .col-sm-10
-        - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
-            code #{JSON.stringify(value)}
-        - else
-            code #{value}
+        +json_value(value)
 
   a.btn.btn-default(href='/controller/networks' name='networks' role='button' style='margin-top: 10px;') Networks

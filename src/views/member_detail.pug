@@ -14,10 +14,7 @@ block net_content
       .col-sm-2
         a(href=('/controller/network/' + member.nwid + '/member/' + member.address + '/' + key)) #{key}:
       .col-sm-10
-        - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
-            code #{JSON.stringify(value)}
-        - else
-            code #{value}
+        +json_value(value)
 
   a.btn.btn-default(href=('/controller/network/' + member.nwid + "#members") name='networks' role='button' style='margin-top: 10px;')
     | Members
