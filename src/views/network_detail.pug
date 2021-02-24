@@ -95,7 +95,7 @@ block net_content
           td(width='17%')
             | Peer status
           td(width='13%')
-            | Peer latency
+            | Peer address / latency
         each member in members
           - const peer = member.peer;
           tr
@@ -133,8 +133,15 @@ block net_content
               else
                 span(style='color: red;') OFFLINE
             td
-              if (peer && peer.latency != -1)
-                | #{peer.latency} ms
+              if (peer)
+                each path in peer.paths
+                  - const [ip, port] = path.address.split('/');
+                  = ip
+                  span(style='color: gray;') /#{port}
+                  = ' '
+                if (peer.latency != -1)
+                  br
+                  | (#{peer.latency} ms)
         else
           .alert.alert-info
             strong There are no members on this network - invite users to join #{network.nwid}
