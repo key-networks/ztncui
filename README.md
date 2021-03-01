@@ -18,7 +18,7 @@ See [github.com/key-networks/ztncui-containerized](https://github.com/key-networ
 Relative directory references below are relative to the cloned ztncui directory.
 
 ### Prerequisites
-* ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v8 or higher.
+* ztncui is a [node.js](https://nodejs.org) [Express](https://expressjs.com) application that requires [node.js](https://nodejs.org) v14.
 
 * ztncui uses argon2 for password hashing. Argon2 needs the following:
   1. g++
@@ -29,7 +29,7 @@ sudo npm install -g node-gyp
 
 * ztncui requires [ZeroTier One](https://www.zerotier.com/download.shtml) to be installed on the same machine.  This will run as the network controller to establish ZeroTier networks.
 
-* ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.  It should be easy to modify for other platforms - please feed back if this is required. (Edit: it should be easier to run on any platform now using a `.env` file - see below).
+* ztncui has been developed on a Linux platform and expects the ZT home directory to be in `/var/lib/zerotier-one`.
 
 ### Installing
 ##### 1. Clone the repository on a machine running ZeroTier One:
@@ -79,13 +79,20 @@ chmod 600 .env
 
 The `.env` file should make it easier to run ztncui on a non-Linux platform.
 
-##### 4. Copy the default passwd file
+##### 4. Run in production mode
+To run the server in production mode, add the following to the `.env` file (see 3B above):
+```
+NODE_ENV=production
+```
+Without this, the template engine always re-compiles the pug file when rendering (taking ~200 ms!)
+
+##### 5. Copy the default passwd file
 To prevent git from over-writing your password file every time you pull updates from the repository, the etc/passwd file has been added to .gitignore.  So you need to copy the default file after the first time you do a git clone.  All these things ideally need to be done with a package installer script:
 ```shell
 cp -v etc/default.passwd etc/passwd
 ```
 
-##### 5. Start the app manually:
+##### 6. Start the app manually:
 ```shell
 npm start
 ```
@@ -94,7 +101,7 @@ This will run the app on TCP port 3000 by default.  If port 3000 is already in u
 HTTP_PORT=3456
 ```
 
-##### 6. Start the app automatically
+##### 7. Start the app automatically
 To start the app automatically, something like [PM2](http://pm2.keymetrics.io) can be used.  Install it with:
 ```shell
 sudo npm install -g pm2
@@ -117,27 +124,27 @@ Save the current PM2 process list so that ztncui will restart across reboots:
 pm2 save
 ```
 
-##### 7. Test access on http://localhost:3000
+##### 8. Test access on http://localhost:3000
   If the machine has a GUI and GUI web browser, then use it to access the app, otherwise use a text web browser like Lynx or a CLI web browser like curl:
 ```shell
 curl http://localhost:3000
 ```
 You should see the front page of the app (or the raw HTML with curl).
 
-##### 8. Remote access via HTTPS
+##### 9. Remote access via HTTPS
 This app listens for HTTP requests on the looback interface (default port 3000).  It can be reverse proxied by Nginx (which can proxy the HTTP as HTTPS), or accessed over an SSH tunnel as described below.
 
-The app can be made to listen on all interfaces for HTTP requests by setting HTTP_ALL_INTERFACES in the .env file, e.g.:
+The app can be made to listen on all interfaces for HTTP requests by setting HTTP_ALL_INTERFACES in the `.env` file, e.g.:
 ```
 HTTP_ALL_INTERFACES=yes
 ```
 Note that HTTP traffic is unencrypted, so this should only be done on a secure network, otherwise usernames and passwords will be exposed in plain text over the network.
 
-The app can be made to listen on all interfaces for HTTPS requests by specifying HTTPS_PORT in the .env file, e.g.:
+The app can be made to listen on all interfaces for HTTPS requests by specifying HTTPS_PORT in the `.env` file, e.g.:
 ```
 HTTPS_PORT=3443
 ```
-The app can be made to listen on a specific interface for HTTPS requests by specifying HTTPS_HOST (the host name or IP address of the interface) in the .env file, e.g.:
+The app can be made to listen on a specific interface for HTTPS requests by specifying HTTPS_HOST (the host name or IP address of the interface) in the `.env` file, e.g.:
 ```
 HTTPS_HOST=12.34.56.78
 ```
@@ -156,7 +163,9 @@ If HTTPS_HOST is not specified, but HTTPS_PORT is specified, then the app will l
 ###### TLS Certificate
 For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  There are a few options:
 
-1. Generate a self-signed certificate as follows:
+1. By default, if there is no existing TLS certificate and private key pair, the RPM and DEB packages automatically generate a self-signed certificate / private key pair.
+
+2. If you are running directly from source, then generate a self-signed certificate as follows:
    ```shell
    cd etc/tls
    openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout privkey.pem -out fullchain.pem
@@ -165,11 +174,11 @@ For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  Ther
 
    The advantage of this option is that it is quick and easy to generate the certificate / private key pair.  The disadvantage is that your web browser will give you a warning that it cannot verify the certificate.  You can override this warning and make a temporary exception.
 
-2. Buy a certificate:
+3. Buy a certificate:
 
    You will need to store the private key as `etc/tls/privkey.pem` and the full certificate chain as `etc/tls/fullchain.pem`.  They need to be in PEM format.
 
-3. Get a free certificate from Letsencrypt.org:
+4. Get a free certificate from Letsencrypt.org:
 
       a. Install certbot by following the instructions at certbot.eff.org:
 
@@ -201,7 +210,7 @@ For HTTPS you obviously need a TLS (SSL) certificate and private key pair.  Ther
 Once you have a certificate at `etc/tls/fullchain.pem` and private key at `etc/tls/privkey.pem`, you should be able to access ztncui over HTTPS on the port specified by HTTPS_PORT.
 
 
-##### 9. Remote access via SSH
+##### 10. Remote access via SSH
 ###### SSH tunnel from Linux / Unix / macOS client
 An SSH tunnel can be established with:
 ```shell
@@ -304,3 +313,6 @@ Problems with ztncui can be reported using the GitHub issue tracking system.  Pl
 
 ## License
 The ztncui code is open source code, licensed under the GNU GPLv3, and is free to use on those terms. If you are interested in commercial licensing, please contact us via the contact form at [key-networks.com](https://key-networks.com) .
+
+## Thanks
+@lideming for a rework and improvement of the network details page, adding DNS support, peer status/address/latency and other improvements.
