@@ -1,7 +1,17 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
+
+mixin nav_item(name, displayName, href)
+  li(class=((navigate && navigate.active === name) ? 'active' : ''))
+    a(href=href) #{displayName}
+
+mixin json_value(value)
+  - if ((!!value ) && (value.constructor == Object || value.constructor == Array))
+      code(style='white-space: pre;')= JSON.stringify(value, null, 2)
+  - else
+      code= value
 
 doctype html
 html(lang='en')
@@ -11,7 +21,26 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/bscss/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    script(src='/jqjs/jquery.min.js')
     script(src='/bsjs/bootstrap.min.js')
   body
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle(type='button' data-toggle='collapse' data-target='#BarNav')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='https://key-networks.com' target='_blank')
+            img(src='/images/key-logo.svg' alt='Key Networks logo' height='25px' width='25px' style='display: inline')
+            |  Key Networks
+        .collapse.navbar-collapse(id='BarNav')
+          ul.nav.navbar-nav
+            block nav_items
+          ul.nav.navbar-nav.navbar-right
+            li
+              block nav_login
+                a(href='/logout')
+                  span.glyphicon.glyphicon-log-out
+                  |  Logout
     block body_content

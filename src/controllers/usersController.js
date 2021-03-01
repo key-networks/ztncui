@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -17,7 +17,7 @@ const chmod = util.promisify(fs.chmod);
 
 let _users = null;
 
-get_users = async function() {
+const get_users = async function() {
   if (_users) {
     return _users;
   } else {
@@ -31,7 +31,7 @@ get_users = async function() {
 }
 exports.get_users = get_users;
 
-update_users = async function(users) {
+const update_users = async function(users) {
   try {
     await writeFile(passwd_file, JSON.stringify(users), 'utf8');
     await chmod(passwd_file, 0600);

@@ -1,13 +1,13 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
 const argon2 = require('argon2');
 const usersController = require('../controllers/usersController');
 
-hash_check = async function(user, password) {
+const hash_check = async function(user, password) {
   let verified = false;
   try {
     var users = await usersController.get_users();
@@ -43,6 +43,6 @@ exports.restrict = function(req, res, next) {
     next();
   } else {
     req.session.error = 'Access denied!';
-    res.redirect('/login');
+    res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
   }
 }

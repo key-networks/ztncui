@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -8,9 +8,9 @@ const got = require('got');
 const ipaddr = require('ip-address');
 const token = require('./token');
 
-ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
+const ZT_ADDR = process.env.ZT_ADDR || 'localhost:9993';
 
-init_options = async function() {
+const init_options = async function() {
   let tok = null;
 
   try {
@@ -29,15 +29,20 @@ init_options = async function() {
   return options;
 }
 
-get_zt_address = async function() {
+const get_zt_status = async function() {
   const options = await init_options();
 
   try {
     const response = await got(ZT_ADDR + '/status', options);
-    return response.body.address;
+    return response.body;
   } catch(err) {
     throw(err);
   }
+}
+exports.get_zt_status = get_zt_status;
+
+const get_zt_address = async function() {
+  return (await get_zt_status()).address;
 }
 exports.get_zt_address = get_zt_address;
 
@@ -68,7 +73,7 @@ exports.network_list = async function() {
   return networks;
 }
 
-network_detail = async function(nwid) {
+const network_detail = async function(nwid) {
   const options = await init_options();
 
   try {
@@ -241,7 +246,7 @@ exports.members = async function(nwid) {
   }
 }
 
-member_detail = async function(nwid, id) {
+const member_detail = async function(nwid, id) {
   const options = await init_options();
 
   try {
@@ -301,5 +306,24 @@ exports.network_easy_setup = async function(nwid,
     return response.body;
   } catch(err) {
     throw(err);
+  }
+}
+
+exports.peers = async function() {
+  const options = await init_options();
+  const response = await got(ZT_ADDR + '/peer', options);
+  return response.body;
+}
+
+exports.peer = async function(id) {
+  const options = await init_options();
+  try {
+    const response = await got(ZT_ADDR + '/peer/' + id, options);
+    return response.body;
+  } catch (error) {
+    if (error instanceof got.HTTPError && error.statusCode == 404) {
+      return null;
+    }
+    throw error;
   }
 }

@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -10,8 +10,17 @@ const authenticate = auth.authenticate;
 const restrict = auth.restrict;
 const router = express.Router();
 
+/** Redirect logged user to controler page */
+function guest_only(req, res, next) {
+  if (req.session.user) {
+    res.redirect('/controller');
+  } else {
+    next();
+  }
+}
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', guest_only, function(req, res, next) {
   res.render('front_door', {title: 'ztncui'});
 });
 
@@ -21,7 +30,7 @@ router.get('/logout', function(req, res) {
   });
 });
 
-router.get('/login', function(req, res) {
+router.get('/login', guest_only, function(req, res) {
   let message = null;
   if (req.session.error) {
     if (req.session.error !== 'Access denied!') {
@@ -40,7 +49,7 @@ router.post('/login', async function(req, res) {
         req.session.user = user;
         req.session.success = 'Authenticated as ' + user.name;
         if (user.pass_set) {
-          res.redirect('/controller');
+          res.redirect(req.query.redirect || '/controller');
         } else {
           res.redirect('/users/' + user.name + '/password');
         }

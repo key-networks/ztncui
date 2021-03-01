@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -12,6 +12,42 @@ const util = require('util');
 
 storage.initSync({dir: 'etc/storage'});
 
+async function get_network_with_members(nwid) {
+  const [network, peers, members] = await Promise.all([
+    zt.network_detail(nwid),
+    zt.peers(),
+    zt.members(nwid)
+      .then(member_ids =>
+        Promise.all(
+          Object.keys(member_ids)
+            .map(id => Promise.all([
+              zt.member_detail(nwid, id),
+              storage.getItem(id)
+            ]))
+        )
+      ).then(results => results.map(([member, name]) => {
+        member.name = name || '';
+        return member;
+      }))
+  ]);
+  for (const member of members) {
+    member.peer = peers.find(x => x.address === member.address);
+  }
+  return {network, members};
+}
+
+async function get_network_member(nwid, memberid) {
+  const [network, member, peer, name] = await Promise.all([
+    zt.network_detail(nwid),
+    zt.member_detail(nwid, memberid),
+    zt.peer(memberid),
+    storage.getItem(memberid)
+  ]);
+  member.name = name || '';
+  member.peer = peer;
+  return {network, member};
+}
+
 // ZT network controller home page
 exports.index = async function(req, res) {
   const navigate =
@@ -20,11 +56,11 @@ exports.index = async function(req, res) {
     }
 
   try {
-    zt_address = await zt.get_zt_address();
-    res.render('index', {title: 'ztncui', navigate: navigate, zt_address: zt_address});
+    const zt_status = await zt.get_zt_status();
+    res.render('index', {title: 'ztncui', navigate: navigate, zt_status});
   } catch (err) {
     res.render('index', {title: 'ztncui',
-                      navigate: navigate, error: 'ERROR resolving ZT address: ' + err});
+                      navigate: navigate, error: 'ERROR getting ZT status: ' + err});
   }
 };
 
@@ -51,13 +87,15 @@ exports.network_detail = async function(req, res) {
       whence: '/controller/networks'
     }
 
-  console.log('NAVIGATE = ' + navigate.toString());
-  console.log(util.inspect(navigate, false, null, true /* enable colors */))
-
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const members = await zt.members(req.params.nwid);
-    res.render('network_detail', {title: 'Detail for network', navigate: navigate, network: network, members: members});
+    const [
+      {network, members},
+      zt_address
+    ] = await Promise.all([
+      get_network_with_members(req.params.nwid),
+      zt.get_zt_address()
+    ]);
+    res.render('network_detail', {title: 'Network ' + network.name, navigate: navigate, network: network, members: members, zt_address: zt_address});
   } catch (err) {
     res.render('network_detail', {title: 'Detail for network', navigate: navigate, error: 'Error resolving detail for network ' + req.params.nwid + ': ' + err});
   }
@@ -95,7 +133,7 @@ exports.network_create_post = async function(req, res) {
   } else {
     try {
       const network = await zt.network_create(name);
-      res.redirect('/controller/networks');
+      res.redirect('/controller/network/' + network.nwid);
     } catch (err) {
       res.render('network_detail', {title: 'Create Network - error', navigate: navigate, error: 'Error creating network ' + name.name});
     }
@@ -177,21 +215,15 @@ exports.name = async function(req, res) {
   let name = { name: req.body.name };
 
   if (errors) {
-    try {
-      const network = await zt.network_detail(req.params.nwid);
-      res.render('name', {title: 'Rename network', navigate: navigate, network: network, name: name, errors: errors});
-    } catch (err) {
-      res.render('name', {title: 'Rename network', navigate: navigate, error: 'Error resolving network detail for network ' + req.params.nwid + ': ' + err});
-    }
+    console.error("network name validation errors", errors);
   } else {
     try {
       const network = await zt.network_object(req.params.nwid, name);
-      res.redirect('/controller/networks');
     } catch ( err) {
-      res.render('name', {title: 'Rename network', navigate: navigate, error: 'Error renaming network ' + req.params.nwid + ': ' + err});
+      console.error("Error renaming network " + req.params.nwid, err);
     }
   }
-
+  res.redirect('/controller/network/' + req.params.nwid);
 };
 
 // ipAssignmentPools POST
@@ -425,6 +457,35 @@ exports.v6AssignMode = async function (req, res) {
   }
 }
 
+// dns POST
+exports.dns = async function (req, res) {
+  const navigate = {
+    active: 'networks',
+    whence: ''
+  };
+
+  const dns = {
+    dns: {
+      domain: req.body.domain,
+      servers: req.body.servers
+        .split('\n')
+        .map(x => x.trim())
+        .filter(ip =>
+          new ipaddr.Address4(ip).isValid() ||
+          new ipaddr.Address6(ip).isValid()
+        )
+    }
+  };
+
+  try {
+    const network = await zt.network_object(req.params.nwid, dns);
+    navigate.whence = '/controller/network/' + network.nwid;
+    res.render('dns', {title: 'dns', navigate: navigate, network: network});
+  } catch (err) {
+    res.render('dns', {title: 'dns', navigate: navigate, error: 'Error updating dns for network ' + req.params.nwid + ': ' + err});
+  }
+}
+
 // Display detail page for specific member
 exports.member_detail = async function(req, res) {
   const navigate =
@@ -434,15 +495,12 @@ exports.member_detail = async function(req, res) {
     }
 
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member = await zt.member_detail(req.params.nwid, req.params.id);
-    let name = await storage.getItem(member.id);
-    if (!name) name = '';
-    member.name = name;
-    navigate.whence = '/controller/network/' + network.nwid + '/members';
+    const {network, member} = await get_network_member(req.params.nwid, req.params.id);
+    navigate.whence = '/controller/network/' + network.nwid + '#members';
     res.render('member_detail', {title: 'Network member detail', navigate: navigate, network: network, member: member});
   } catch (err) {
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
+    console.error(err);
+    res.render('error', {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
   }
 };
 
@@ -455,12 +513,8 @@ exports.member_object = async function(req, res) {
     }
 
   try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member = await zt.member_detail(req.params.nwid, req.params.id);
-    let name = await storage.getItem(member.id);
-    if (!name) name = '';
-    member.name = name;
-    navigate.whence = '/controller/network/' + network.nwid + '/members';
+    const {network, member} = await get_network_member(req.params.nwid, req.params.id);
+    navigate.whence = '/controller/network/' + network.nwid + '#members';
     res.render(req.params.object, {title: req.params.object, navigate: navigate, network: network, member: member}, function(err, html) {
       if (err) {
         if (err.message.indexOf('Failed to lookup view') !== -1 ) {
@@ -480,7 +534,7 @@ exports.easy_get = async function(req, res) {
   const navigate =
     {
       active: 'networks',
-      whence: '/controller/networks'
+      whence: '/controller/network/' + req.params.nwid
     }
 
   try {
@@ -561,7 +615,7 @@ exports.easy_post = async function(req, res) {
   }
 }
 
-// Easy members auth GET or POST
+// Easy members auth POST
 exports.members = async function(req, res) {
   const navigate =
     {
@@ -630,26 +684,6 @@ exports.members = async function(req, res) {
       }
     }
   }
-
-  try {
-    const network = await zt.network_detail(req.params.nwid);
-    const member_ids = await zt.members(req.params.nwid);
-    const members = [];
-    for (id in member_ids) {
-      let member = await zt.member_detail(req.params.nwid, id);
-      let name = await storage.getItem(member.id);
-      if (!name) name = '';
-      member.name = name;
-      members.push(member);
-    }
-
-    res.render('members', {title: 'Members of this network', navigate: navigate,
-                          network: network, members: members, errors: errors});
-  } catch (err) {
-    res.render('members', {title: 'Members of this network', navigate: navigate,
-      error: 'Error resolving detail for network ' + req.params.nwid
-                                                              + ': ' + err});
-  }
 }
 
 // Member delete GET or POST
@@ -673,10 +707,9 @@ exports.member_delete = async function(req, res) {
       member = await zt.member_detail(req.params.nwid, req.params.id);
       name = await storage.getItem(member.id);
     }
-    if (!name) name = '';
-    member.name = name;
+    member.name = name || '';
 
-    navigate.whence = '/controller/network/' + network.nwid + '/members';
+    navigate.whence = '/controller/network/' + network.nwid;
     res.render('member_delete', {title: 'Delete member from ' + network.name,
                                   navigate: navigate, network: network, member: member});
   } catch (err) {
@@ -697,10 +730,8 @@ exports.delete_ip = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     let member = await zt.member_detail(req.params.nwid, req.params.id);
-    navigate.whence = '/controller/network/' + network.nwid + '/members';
-    let name = await storage.getItem(member.id);
-    if (!name) name = '';
-    member.name = name;
+    navigate.whence = '/controller/network/' + network.nwid;
+    member.name = await storage.getItem(member.id) | '';
     if (req.params.index) {
       member = await zt.ipAssignmentDelete(network.nwid, member.id,
                                                               req.params.index);
@@ -758,15 +789,13 @@ exports.assign_ip = async function(req, res) {
 
   try {
     let member = await zt.member_detail(req.params.nwid, req.params.id);
-    navigate.whence = '/controller/network/' + network.nwid + '/members';
+    navigate.whence = '/controller/network/' + network.nwid;
 
     if (!errors) {
       member = await zt.ipAssignmentAdd(network.nwid, member.id, ipAssignment);
     }
 
-    let name = await storage.getItem(member.id);
-    if (!name) name = '';
-    member.name = name;
+    member.name = await storage.getItem(member.id) | '';
 
     res.render('ipAssignments', {title: 'ipAssignments', navigate: navigate,
                   ipAssignment: ipAssignment, network: network, member: member,

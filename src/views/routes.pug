@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
@@ -27,22 +27,22 @@ block net_content
 
   form(method='POST' action='/controller/network/' + network.nwid + '/routes')
     .form-group.row
-      .col-sm-2
+      .col-sm-12
         label(for='target') Target:
       .col-sm-12
         input#target.form-control(type='text' name='target' placeholder='e.g. 10.11.12.0/24' value=(undefined===route? '' : route.target))
 
     .form-group.row
-      .col-sm-2
+      .col-sm-12
         label(for='via') Gateway:
       .col-sm-12
         input#via.form-control(type='text' name='via' placeholder='e.g. 172.16.2.1 or leave blank if the target is the ZT network' value=(undefined===route? '' : route.via))
 
     .form-group.row
-      .col-sm-2
+      .col-sm-12
         button.btn.btn-primary(type='submit') Submit
         = ' '
-        a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+        a.btn.btn-default(href=('/controller/network/' + network.nwid) name='cancel' role='button') Cancel
 
   if errors
     .row

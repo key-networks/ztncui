@@ -1,6 +1,6 @@
 /*
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 */
 
@@ -42,6 +42,9 @@ router.get('/network/:nwid/routes/:target_ip/:target_prefix/delete', restrict, n
 
 // POST request for routes
 router.post('/network/:nwid/routes', restrict, networkController.routes);
+
+// POST request for dns
+router.post('/network/:nwid/dns', restrict, networkController.dns);
 
 // POST request for private
 router.post('/network/:nwid/private', restrict, networkController.private);

@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends controller_layout
@@ -10,14 +10,13 @@ block content
 
   h2
     a(href='https://zerotier.com' target='_blank') ZeroTier 
-    | network controller UI
-
-  h3 Network controller details
+    | network controller UI by 
+    a(href='https://key-networks.com' target='_blank') Key Networks
 
   if error
      b #{error}
   else
-    h4 This network controller has a ZeroTier address of <b>#{zt_address}</b>
-
+    h4 This network controller has a ZeroTier address of <b>#{zt_status.address}</b>
+    h4 ZeroTier version <b>#{zt_status.version}</b>
     h4
       a(href='/controller/networks') List all networks on this network controller

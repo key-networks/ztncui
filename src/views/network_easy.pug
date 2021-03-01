@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
@@ -80,7 +80,7 @@ block net_content
     .form-group(style='padding-top: 10px')
       button.btn.btn-primary(type='submit') Submit
       = ' '
-      a.btn.btn-default(href='/controller/networks' name='cancel' role='button') Cancel
+      a.btn.btn-default(href=('/controller/network/' + network.nwid) name='cancel' role='button') Cancel
 
     if errors
       ul

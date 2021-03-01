@@ -1,44 +1,159 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
 
+//- Don't display that title
+block title
+
+//- Replace the network title with the editable one
+block network_title
+  h2
+    | Network 
+    a#change-name(href='#')
+      span#name= network.name
+      i.glyphicon.glyphicon-pencil(style='font-size: 20px;')
+    input#name-input.form-control(type='text' style='width: 200px; display: none;')
+    |  (#{network.nwid}):
+  script.
+    $(function() {
+      var nwurl = '/controller/network/#{network.nwid}';
+      var name = !{JSON.stringify(network.name)};
+
+      function toggleNameEditor(show) {
+        $('#change-name').css('display', !show ? '' : 'none');
+        $('#name-input').css('display', show ? 'inline-block' : 'none');
+      }
+
+      function submit() {
+        var newName = $('#name-input').val();
+        if (newName != name) {
+          name = newName;
+          $.post(nwurl + '/name', {'name': name})
+            .done(function () {
+              $('#name').text(newName);
+            });
+        }
+        toggleNameEditor(false);
+      }
+
+      $('#change-name').on('click', function() {
+        toggleNameEditor(true);
+        $('#name-input').val(name);
+        $('#name-input').focus();
+      });
+      $('#name-input').on('focusout', submit);
+      $('#name-input').keypress(function (e) {
+        if (e.which == 13) submit();
+      });
+    });
+
 block net_content
-  if error
-     b #{error}
-  else
-    - if (members !== undefined)
-      h3 Members
-      each value, key in members
-        .row
-          .col-sm-2
-            a(href= network.nwid + '/member/' + key) #{key}
-          .col-sm-10
-            | revision: #{value}
+  - const nwurl = '/controller/network/' + network.nwid;
 
-    h3= title
-    each value, key in network
-      .row
-        .col-sm-2
-          a(href= network.nwid + '/' + key) #{key}:
-        .col-sm-10
-          - if ((!!value ) && (value.constructor == Object))
-              p {
-              each v2, k2 in value
-                p #{k2}: #{v2},
-              p }
-          - else if ((!!value ) && (value.constructor == Array))
-              p [
-              each elem in value
-                p {
-                  - if (!!elem)
-                    each v2, k2 in elem
-                      p #{k2}: #{v2},
-                p },
-              p ]
-          - else
-              | #{value}
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/private') role='button')
+    = network.private ? "Private" : "Public"
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/easy') role='button') Easy setup
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/routes') role='button') Routes
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/ipAssignmentPools') role='button') Assignment Pools
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/v4AssignMode') role='button') IPv4 Assign Mode
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/v6AssignMode') role='button') IPv6 Assign Mode
+  a.btn.btn-primary(style="margin: 5px" href=(nwurl + '/dns') role='button') DNS
 
-    a.btn.btn-default(href='/controller/networks' name='networks' role='button') Networks
+  if (members !== undefined)
+    script.
+      $(function() {
+        const url = "#{nwurl}/members";
+        $('.authCheck').on('click', function() {
+          $.post(url, {'id': this.value, 'auth': this.checked});
+        });
+        $('.bridgeCheck').on('click', function() {
+          $.post(url, {'id': this.value, 'activeBridge': this.checked});
+        });
+        $('.text').on('change', function() {
+          $.post(url, {'id': this.name, 'name': this.value});
+        });
+      });
+    h3#members Members (#{members.length})
+    form(method='POST' action='')
+      table.table.table-responsive.table-striped.table-hover
+        tr
+          td(width='3%')
+            = ''
+          td(width='20%')
+            | Member name
+          td(width='10%')
+            | Member ID
+          td(width='10%')
+            | Authorized
+          td(width='10%')
+            | Active bridge
+          td(width='17%')
+            | IP assignment
+          td(width='17%')
+            | Peer status
+          td(width='13%')
+            | Peer address / latency
+        each member in members
+          - const peer = member.peer;
+          tr
+            - const url = nwurl + '/member/' + member.id
+            td
+              a(href=url + '/delete')
+                i.glyphicon.glyphicon-trash
+            td
+              input.form-control.text(type='text' name=member.id value=member.name)
+            td
+              a(href=url) #{member.id}
+            td
+              input.authCheck(type='checkbox' value=member.id checked=(member.authorized? true : false))
+            td
+              input.bridgeCheck(type='checkbox' value=member.id checked=(member.activeBridge? true : false))
+            td
+              each ipAssignment in member.ipAssignments
+                a(href=nwurl + '/member/' + member.id + '/ipAssignments')
+                  each digit in ipAssignment
+                    = digit
+                  = ' '
+              else
+                a(href=nwurl + '/member/' + member.id + '/ipAssignments')
+                  | IP assignment
+            td
+              if (peer && peer.latency != -1 && peer.versionMajor != -1)
+                if (peer.latency != -1)
+                  span(style='color: green;')
+                    | ONLINE (v#{peer.version})
+                else
+                  span(style='color: orange;')
+                    | RELAY (v#{peer.version})
+              else if (member.id == zt_address)
+                span(style='color: green;') CONTROLLER
+              else
+                span(style='color: red;') OFFLINE
+            td
+              if (peer)
+                each path in peer.paths
+                  - const [ip, port] = path.address.split('/');
+                  = ip
+                  span(style='color: gray;') /#{port}
+                  = ' '
+                if (peer.latency != -1)
+                  br
+                  | (#{peer.latency} ms)
+        else
+          .alert.alert-info
+            strong There are no members on this network - invite users to join #{network.nwid}
+
+  a.btn.btn-default(href='' name='refresh' role='button') Refresh
+
+  h3#detail Detail for network
+  each value, key in network
+    .row(style='margin: 5px 0;')
+      .col-sm-2
+        a(href= network.nwid + '/' + key) #{key}:
+      .col-sm-10
+        +json_value(value)
+
+  a.btn.btn-default(href='/controller/networks' name='networks' role='button' style='margin-top: 10px;') Networks

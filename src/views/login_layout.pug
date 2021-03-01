@@ -1,28 +1,16 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends head_layout
 
-block body_content
-  nav.navbar.navbar-inverse.navbar-fixed-top
-    .container-fluid
-      .navbar-header
-        button.navbar-toggle(type='button' data-toggle='collapse' data-target='#BarNav')
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-        a.navbar-brand(href='https://key-networks.com' target='_blank')
-          img(src='/images/key-logo.svg' alt='Key Networks logo' height='25px' width='25px' style='display: inline')
-          |  Key Networks
-      .collapse.navbar-collapse(id='BarNav')
-        ul.nav.navbar-nav.navbar-right
-          li
-            a(href='/login')
-              span.glyphicon.glyphicon-log-in
-              |  Login
+block nav_login
+  a(href='/login')
+    span.glyphicon.glyphicon-log-in
+    |  Login
 
+block body_content
   .container(style='margin-top:50px')
     .row
       .col-sm-12

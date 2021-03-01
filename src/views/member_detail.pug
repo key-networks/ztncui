@@ -1,32 +1,20 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
 
 block net_content
-  h4 for member #{member.name} (#{member.address})
+  h4
+    | for member #{member.name} (#{member.address}) in network
 
   each value, key in member
     .row
       .col-sm-2
-        a(href= member.address + '/'  + key) #{key}:
+        a(href=('/controller/network/' + member.nwid + '/member/' + member.address + '/' + key)) #{key}:
       .col-sm-10
-        - if ((!!value ) && (value.constructor == Object))
-            p {
-            each v2, k2 in value
-              p #{k2}: #{v2},
-            p }
-        - else if ((!!value ) && (value.constructor == Array))
-            p [
-            each elem in value
-              p {
-              each v2, k2 in elem
-                p #{k2}: #{v2},
-              p }
-            p ]
-        - else
-            | #{value}
+        +json_value(value)
 
-  a.btn.btn-default(href='../members' name='networks' role='button') Members
+  a.btn.btn-default(href=('/controller/network/' + member.nwid + "#members") name='networks' role='button' style='margin-top: 10px;')
+    | Members

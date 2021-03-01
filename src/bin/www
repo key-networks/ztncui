@@ -10,11 +10,6 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
-const options = {
-  cert: fs.readFileSync('etc/tls/fullchain.pem'),
-  key: fs.readFileSync('etc/tls/privkey.pem')
-}
-
 /**
  * Get ports from environment and store in Express.
  */
@@ -49,6 +44,11 @@ if (http_all_interfaces) {
     console.log('Listening for HTTP requests on port ' + http_port + ' on localhost');
     app.listen(http_port, 'localhost');
 }
+
+const options = !https_port ? {} : {
+  cert: fs.readFileSync('etc/tls/fullchain.pem'),
+  key: fs.readFileSync('etc/tls/privkey.pem')
+};
 
 const server = https.createServer(options, app);
 

@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2018  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
@@ -9,7 +9,7 @@ block net_content
   if member.deleted
     .alert.alert-success
       strong #{member.name} (#{member.id}) was deleted
-    a.btn.btn-default(href='../../members' name='networks' role='button') Members
+    a.btn.btn-default(href=('/controller/network/' + network.nwid + '#members') name='networks' role='button') Members
 
   else
     .alert.alert-info
@@ -21,7 +21,7 @@ block net_content
     form(method='POST' action='')
       button.btn.btn-primary(type='submit', name='delete') Delete #{member.name} (#{member.id})
       = ' '
-      a.btn.btn-default(href='/controller/network/' + network.nwid + '/members',
+      a.btn.btn-default(href='/controller/network/' + network.nwid + '#members',
                                           name='cancel', role='button') Cancel
 
   if errors
