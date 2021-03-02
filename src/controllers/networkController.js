@@ -6,11 +6,10 @@
 
 const fs = require('fs');
 const ipaddr = require('ip-address');
-const storage = require('node-persist');
+const storage = require('./storage');
 const zt = require('./zt');
 const util = require('util');
 
-storage.initSync({dir: 'etc/storage'});
 
 async function get_network_with_members(nwid) {
   const [network, peers, members] = await Promise.all([
@@ -22,11 +21,11 @@ async function get_network_with_members(nwid) {
           Object.keys(member_ids)
             .map(id => Promise.all([
               zt.member_detail(nwid, id),
-              storage.getItem(id)
+              storage.get_member(id)
             ]))
         )
-      ).then(results => results.map(([member, name]) => {
-        member.name = name || '';
+      ).then(results => results.map(([member, {name}]) => {
+        member.name = name;
         return member;
       }))
   ]);
@@ -37,13 +36,13 @@ async function get_network_with_members(nwid) {
 }
 
 async function get_network_member(nwid, memberid) {
-  const [network, member, peer, name] = await Promise.all([
+  const [network, member, peer, {name}] = await Promise.all([
     zt.network_detail(nwid),
     zt.member_detail(nwid, memberid),
     zt.peer(memberid),
-    storage.getItem(memberid)
+    storage.get_member(memberid)
   ]);
-  member.name = name || '';
+  member.name = name;
   member.peer = peer;
   return {network, member};
 }
@@ -677,7 +676,9 @@ exports.members = async function(req, res) {
 
       if (!errors) {
         try {
-          const ret = await storage.setItem(req.body.id, req.body.name);
+          const member = await storage.get_member(req.body.id);
+          member.name = req.body.name;
+          await storage.set_member(req.body.id, member);
         } catch (err) {
           throw err;
         }
@@ -697,17 +698,16 @@ exports.member_delete = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     let member = null;
-    let name = null;
+    let { name } = await storage.get_member(req.params.id);
     if (req.method === 'POST') {
       member = await zt.member_delete(req.params.nwid, req.params.id);
       if (member.deleted) {
-        name = await storage.removeItem(member.id);
+        await storage.delete_member(member.id);
       }
     } else {
       member = await zt.member_detail(req.params.nwid, req.params.id);
-      name = await storage.getItem(member.id);
     }
-    member.name = name || '';
+    member.name = name;
 
     navigate.whence = '/controller/network/' + network.nwid;
     res.render('member_delete', {title: 'Delete member from ' + network.name,
@@ -731,7 +731,7 @@ exports.delete_ip = async function(req, res) {
     const network = await zt.network_detail(req.params.nwid);
     let member = await zt.member_detail(req.params.nwid, req.params.id);
     navigate.whence = '/controller/network/' + network.nwid;
-    member.name = await storage.getItem(member.id) | '';
+    member.name = (await storage.get_member(member.id)).name;
     if (req.params.index) {
       member = await zt.ipAssignmentDelete(network.nwid, member.id,
                                                               req.params.index);
@@ -795,7 +795,7 @@ exports.assign_ip = async function(req, res) {
       member = await zt.ipAssignmentAdd(network.nwid, member.id, ipAssignment);
     }
 
-    member.name = await storage.getItem(member.id) | '';
+    member.name = (await storage.get_member(member.id)).name;
 
     res.render('ipAssignments', {title: 'ipAssignments', navigate: navigate,
                   ipAssignment: ipAssignment, network: network, member: member,
