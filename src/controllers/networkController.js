@@ -184,7 +184,7 @@ exports.network_object = async function(req, res) {
   try {
     const network = await zt.network_detail(req.params.nwid);
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, network: network}, function(err, html) {
+    res.render('network_prop_' + req.params.object, {title: req.params.object, navigate: navigate, network: network}, function(err, html) {
       if (err) {
         if (err.message.indexOf('Failed to lookup view') !== -1 ) {
           return res.render('not_implemented', {title: req.params.object, navigate: navigate, network: network});
@@ -515,7 +515,7 @@ exports.member_object = async function(req, res) {
   try {
     const {network, member} = await get_network_member(req.params.nwid, req.params.id);
     navigate.whence = '/controller/network/' + network.nwid + '#members';
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, network: network, member: member}, function(err, html) {
+    res.render('member_prop_' + req.params.object, {title: req.params.object, navigate: navigate, network: network, member: member}, function(err, html) {
       if (err) {
         if (err.message.indexOf('Failed to lookup view') !== -1 ) {
           return res.render('not_implemented', {title: req.params.object, navigate: navigate, network: network, member: member});
