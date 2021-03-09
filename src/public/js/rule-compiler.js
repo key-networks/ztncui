@@ -1,3 +1,4 @@
+(function(exports){
 // Source:
 // https://github.com/zerotier/ZeroTierOne/blob/553101e8b5a988003f594037dda82301b0967625/rule-compiler/rule-compiler.js
 
@@ -912,3 +913,5 @@ function compile(src,rules,caps,tags)
 }
 
 exports.compile = compile;
+
+})(this.RuleCompiler = {});
