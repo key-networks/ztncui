@@ -1,0 +1,96 @@
+//-
+  ztncui - ZeroTier network controller UI
+  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
+  Licensed under GPLv3 - see LICENSE for details.
+
+extends network_layout
+
+block net_content
+  - const source = network.rulesSource || {};
+  //- .row
+  //-   .col-sm-8
+  //-     p Current source
+  //-     textarea.form-control(type='text' disabled rows='10')
+  //-       = network.rulesSource
+  //-   .col-sm-4
+  //-     p Current JSON
+  //-     textarea.form-control(type='text' disabled rows='10')
+  //-       = JSON.stringify(network.rules, null, 2)
+
+  //- .row
+  //-   .col-sm-12
+  //-     h3 Change rules:
+
+  .row
+    .col-sm-8
+      p Source
+      textarea#source.form-control(type='text' rows='16')
+        = network.rulesSource
+    .col-sm-4
+      p Compiled
+      textarea#json.form-control(type='text' disabled rows='16')
+
+  .row(style="margin-top: 10px;")
+    .col-sm-12
+      button.btn.btn-primary#submit Submit
+      = ' '
+      a.btn.btn-default(href=('/controller/network/' + network.nwid) name='cancel' role='button') Cancel
+
+  script(src='/js/rule-compiler.js')
+  script.
+    $(function() {
+      var config = {};
+      function update() {
+        var src = $('#source').val();
+        var rules = [];
+        var caps = {};
+        var tags = {};
+        var err = RuleCompiler.compile(src, rules, caps, tags);
+        if (err) {
+          var line = err[0], column = err[1], message = err[2];
+          $('#json').val("Error at " + line + ", " + column +  ": " + message);
+          return;
+        }
+        config = {
+          rulesSource: src,
+          rules: rules,
+          capabilities: caps,
+          tags: tags
+        };
+        console.info(config);
+        $('#json').val(JSON.stringify({
+            capabilities: caps,
+            tags: tags,
+            rules: rules
+          }, null, 2));
+      }
+
+      var timer = null;
+      function delayUpdate() {
+        if (timer != null) clearTimeout(timer);
+        timer = setTimeout(update, 1000);
+      }
+
+      function post() {
+
+      }
+
+      $('#source').on('change', function(e) {
+        update();
+      });
+      $('#source').on('keypress', function (e) {
+        delayUpdate();
+      });
+      $('#submit').on('click', function (e) {
+        post();
+      });
+
+      update();
+    });
+
+  if errors
+    .row
+      .col-sm-12
+        ul
+          for err in errors
+            li!= err.msg
