@@ -193,7 +193,7 @@ exports.network_object = async function(req, res) {
       res.send(html);
     });
   } catch (err) {
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, error: 'Error resolving detail for network ' + req.params.nwid + ': ' + err});
+    res.render('error', {title: req.params.object, navigate: navigate, error: 'Error resolving detail for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -524,7 +524,7 @@ exports.member_object = async function(req, res) {
       res.send(html);
     });
   } catch (err) {
-    res.render(req.params.object, {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
+    res.render('error', {title: req.params.object, navigate: navigate, error: 'Error resolving detail for member ' + req.params.id + ' of network ' + req.params.nwid + ': ' + err});
   }
 }
 
