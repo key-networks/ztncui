@@ -5,21 +5,18 @@ const storage = require('node-persist').create();
  * @typedef {{ rulesSource: string, description: string }} NetworkInfo
  */
 
+exports.init = init;
 async function init() {
     const v1 = require('node-persist').create();
     await v1.init({ dir: 'etc/storage' });
     await storage.init({ dir: 'etc/storage-v2' });
-    const version = await v1.getItem('version');
+    const version = await v1.getItem('version') || 1;
     let newVersion = version;
 
-    if (newVersion === undefined) {
-        const data = [];
-        await v1.forEach((key, value) => {
-            data.push({ key, value });
-        });
-        for (const { key, value } of data) {
+    if (newVersion === 1) {
+        await v1.forEach(async (key, value) => {
             await storage.setItem('member-' + key, { name: value });
-        }
+        });
         newVersion = 2;
         await v1.setItem('version', newVersion);
     }
@@ -28,7 +25,6 @@ async function init() {
         console.info(`Storage version changed: ${version} -> ${newVersion}`);
     }
 }
-exports.init = init;
 
 
 exports.set_member = set_member;
@@ -51,6 +47,7 @@ async function get_member(id) {
     const member = await storage.getItem('member-' + id) || {};
     if (!member.name) member.name = '';
     if (!member.description) member.description = '';
+    return member;
 }
 
 
@@ -80,6 +77,7 @@ async function get_network(id) {
     const network = await storage.getItem('network-' + id) || {};
     if (!network.rulesSource) network.rulesSource = '';
     if (!network.description) network.description = '';
+    return network;
 }
 
 
