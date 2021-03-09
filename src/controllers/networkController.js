@@ -797,11 +797,11 @@ exports.assign_ip = async function(req, res) {
 
     member.name = (await storage.get_member(member.id)).name;
 
-    res.render('ipAssignments', {title: 'ipAssignments', navigate: navigate,
+    res.render('member_prop_ipAssignments', {title: 'ipAssignments', navigate: navigate,
                   ipAssignment: ipAssignment, network: network, member: member,
                                                                errors: errors});
   } catch (err) {
-    res.render('ipAssignments', {title: 'ipAssignments', navigate: navigate,
+    res.render('member_prop_ipAssignments', {title: 'ipAssignments', navigate: navigate,
                     error: 'Error resolving detail for member ' + req.params.id
                               + ' of network ' + req.params.nwid + ': ' + err});
   }
