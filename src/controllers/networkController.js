@@ -254,17 +254,17 @@ exports.ipAssignmentPools = async function(req, res) {
     try {
       const network = await zt.network_detail(req.params.nwid);
       navigate.whence = '/controller/network/' + network.nwid;
-      res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network, errors: errors});
+      res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network, errors: errors});
     } catch (err) {
-      res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error resolving network detail for network ' + req.params.nwid + ': ' + err});
+      res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error resolving network detail for network ' + req.params.nwid + ': ' + err});
     }
   } else {
     try {
       const network = await zt.ipAssignmentPools(req.params.nwid, ipAssignmentPool, 'add');
       navigate.whence = '/controller/network/' + network.nwid;
-      res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network});
+      res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network});
     } catch (err) {
-      res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error applying IP Assignment Pools for network ' + req.params.nwid + ': ' + err});
+      res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error applying IP Assignment Pools for network ' + req.params.nwid + ': ' + err});
     }
   }
 }
@@ -321,17 +321,17 @@ exports.routes = async function (req, res) {
     try {
       const network = await zt.network_detail(req.params.nwid);
       navigate.whence = '/controller/network/' + network.nwid;
-      res.render('routes', {title: 'routes', navigate: navigate, route: route, network: network, errors: errors});
+      res.render('network_prop_routes', {title: 'routes', navigate: navigate, route: route, network: network, errors: errors});
     } catch (err) {
-      res.render('routes', {title: 'routes', navigate: navigate, error: 'Error resolving network detail'});
+      res.render('network_prop_routes', {title: 'routes', navigate: navigate, error: 'Error resolving network detail'});
     }
   } else {
     try {
       const network = await zt.routes(req.params.nwid, route, 'add');
       navigate.whence = '/controller/network/' + network.nwid;
-      res.render('routes', {title: 'routes', navigate: navigate, route: route, network: network});
+      res.render('network_prop_routes', {title: 'routes', navigate: navigate, route: route, network: network});
     } catch (err) {
-      res.render('routes', {title: 'routes', navigate: navigate, error: 'Error adding route for network ' + req.params.nwid + ': ' + err});
+      res.render('network_prop_routes', {title: 'routes', navigate: navigate, error: 'Error adding route for network ' + req.params.nwid + ': ' + err});
     }
   }
 
@@ -355,9 +355,9 @@ exports.route_delete = async function (req, res) {
   try {
     const network = await zt.routes(req.params.nwid, route, 'delete');
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('routes', {title: 'routes', navigate: navigate, route: route, network: network});
+    res.render('network_prop_routes', {title: 'routes', navigate: navigate, route: route, network: network});
   } catch (err) {
-    res.render('routes', {title: 'routes', navigate: navigate, error: 'Error deleting route for network ' + req.params.nwid + ': ' + err});
+    res.render('network_prop_routes', {title: 'routes', navigate: navigate, error: 'Error deleting route for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -379,9 +379,9 @@ exports.ipAssignmentPool_delete = async function (req, res) {
   try {
     const network = await zt.ipAssignmentPools(req.params.nwid, ipAssignmentPool, 'delete');
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network});
+    res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, ipAssignmentPool: ipAssignmentPool, network: network});
   } catch (err) {
-    res.render('ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error deleting IP Assignment Pool for network ' + req.params.nwid + ': ' + err});
+    res.render('member_prop_ipAssignmentPools', {title: 'ipAssignmentPools', navigate: navigate, error: 'Error deleting IP Assignment Pool for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -401,9 +401,9 @@ exports.private = async function (req, res) {
   try {
     const network = await zt.network_object(req.params.nwid, private);
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('private', {title: 'private', navigate: navigate, network: network});
+    res.render('network_prop_private', {title: 'private', navigate: navigate, network: network});
   } catch (err) {
-    res.render('private', {title: 'private', navigate: navigate, error: 'Error applying private for network ' + req.params.nwid + ': ' + err});
+    res.render('network_prop_private', {title: 'private', navigate: navigate, error: 'Error applying private for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -423,9 +423,9 @@ exports.v4AssignMode = async function (req, res) {
   try {
     const network = await zt.network_object(req.params.nwid, v4AssignMode);
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('v4AssignMode', {title: 'v4AssignMode', navigate: navigate, network: network});
+    res.render('network_prop_v4AssignMode', {title: 'v4AssignMode', navigate: navigate, network: network});
   } catch (err) {
-    res.render('v4AssignMode', {title: 'v4AssignMode', navigate: navigate, error: 'Error applying v4AssignMode for network ' + req.params.nwid + ': ' + err});
+    res.render('network_prop_v4AssignMode', {title: 'v4AssignMode', navigate: navigate, error: 'Error applying v4AssignMode for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -450,9 +450,9 @@ exports.v6AssignMode = async function (req, res) {
   try {
     const network = await zt.network_object(req.params.nwid, v6AssignMode);
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('v6AssignMode', {title: 'v6AssignMode', navigate: navigate, network: network});
+    res.render('network_prop_v6AssignMode', {title: 'v6AssignMode', navigate: navigate, network: network});
   } catch (err) {
-    res.render('v6AssignMode', {title: 'v6AssignMode', navigate: navigate, error: 'Error applying v6AssignMode for network ' + req.params.nwid + ': ' + err});
+    res.render('network_prop_v6AssignMode', {title: 'v6AssignMode', navigate: navigate, error: 'Error applying v6AssignMode for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -479,9 +479,9 @@ exports.dns = async function (req, res) {
   try {
     const network = await zt.network_object(req.params.nwid, dns);
     navigate.whence = '/controller/network/' + network.nwid;
-    res.render('dns', {title: 'dns', navigate: navigate, network: network});
+    res.render('network_prop_dns', {title: 'dns', navigate: navigate, network: network});
   } catch (err) {
-    res.render('dns', {title: 'dns', navigate: navigate, error: 'Error updating dns for network ' + req.params.nwid + ': ' + err});
+    res.render('network_prop_dns', {title: 'dns', navigate: navigate, error: 'Error updating dns for network ' + req.params.nwid + ': ' + err});
   }
 }
 
@@ -738,10 +738,10 @@ exports.delete_ip = async function(req, res) {
       res.redirect('/controller/network/' + network.nwid + '/member/' +
                                                   member.id + '/ipAssignments');
     }
-    res.render('ipAssignments', {title: 'ipAssignments ' + network.name,
+    res.render('member_prop_ipAssignments', {title: 'ipAssignments ' + network.name,
           navigate: navigate, index: req.params.index, network: network, member: member});
   } catch (err) {
-    res.render('ipAssignments', {title: 'ipAssignments', navigate: navigate,
+    res.render('member_prop_ipAssignments', {title: 'ipAssignments', navigate: navigate,
                     error: 'Error resolving detail for member ' + req.params.id
                               + ' of network ' + req.params.nwid + ': ' + err});
   }
