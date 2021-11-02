@@ -186,13 +186,9 @@ exports.routes = async function(nwid, route, action) {
 
   const network = await network_detail(nwid);
   let routes = network.routes;
-  const target6 = new ipaddr.Address6(route.target);
-  if (target6.isValid()) {
-    const parts = route.target.split('/');
-    route.target = target6.canonicalForm() + '/' + parts[1];
-  }
+  route.target = canonicalTarget(route.target);
 
-  const route_to_del = routes.find(rt => rt.target === route.target);
+  const route_to_del = routes.find(rt => canonicalTarget(rt.target) === route.target);
 
   if (!route_to_del) {
     if (action === 'add') {
@@ -218,6 +214,15 @@ exports.routes = async function(nwid, route, action) {
   } catch(err) {
     throw(err);
   }
+}
+
+function canonicalTarget(target) {
+  const target6 = new ipaddr.Address6(target);
+  if (target6.isValid()) {
+    const parts = target.split('/');
+    return target6.canonicalForm() + '/' + parts[1];
+  }
+  return target;
 }
 
 exports.network_object = async function(nwid, object) {
