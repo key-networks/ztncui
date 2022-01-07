@@ -121,7 +121,7 @@ block net_content
                 a(href=nwurl + '/member/' + member.id + '/ipAssignments')
                   | IP assignment
             td
-              if (peer && peer.latency != -1 && peer.versionMajor != -1)
+              if (peer && (peer.latency != -1 || peer.versionMajor != -1))
                 if (peer.latency != -1)
                   span(style='color: green;')
                     | ONLINE (v#{peer.version})
