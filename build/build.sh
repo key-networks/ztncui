@@ -26,7 +26,7 @@ BINDINGGYP='node_modules/argon2/binding.gyp'
 
 NODE_VER='v16'
 
-if [ ! -f /usr/lib/gcc/x86_64-redhat-linux/8/libstdc++.a ]; then
+if [ ! -f /usr/lib/gcc/x86_64-redhat-linux/11/libstdc++.a ]; then
   echo "You must install libstdc++-static"
   exit 1
 fi
