@@ -1,6 +1,6 @@
 //-
   ztncui - ZeroTier network controller UI
-  Copyright (C) 2017-2021  Key Networks (https://key-networks.com)
+  Copyright (C) 2017-2023  Key Networks (https://key-networks.com)
   Licensed under GPLv3 - see LICENSE for details.
 
 extends network_layout
@@ -135,13 +135,15 @@ block net_content
             td
               if (peer)
                 each path in peer.paths
-                  - const [ip, port] = path.address.split('/');
-                  = ip
-                  span(style='color: gray;') /#{port}
-                  = ' '
-                if (peer.latency != -1)
-                  br
-                  | (#{peer.latency} ms)
+                  if (path.preferred == true)
+                    - const [ip, port] = path.address.split('/');
+                    = ip
+                    span(style='color: gray;') /#{port}
+                    = ' '
+                    if (peer.latency != -1)
+                      br
+                      | (#{peer.latency} ms)
+                    - break
         else
           .alert.alert-info
             strong There are no members on this network - invite users to join #{network.nwid}
