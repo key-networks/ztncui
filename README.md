@@ -10,7 +10,7 @@ Follow us on [![alt @key_networks on Twitter](https://i.imgur.com/wWzX9uB.png)](
 Instructions for installing on Linux from RPM or DEB packges are available at [key-networks.com/ztncui](https://key-networks.com/ztncui).
 
 ## Docker Container Image
-See [github.com/key-networks/ztncui-containerized](https://github.com/key-networks/ztncui-containerized)
+See [https://github.com/key-networks/ztncui-aio](https://github.com/key-networks/ztncui-aio)
 
 ## Getting Started
 
@@ -45,21 +45,9 @@ npm install
 
 ##### 3. authtoken.secret
 
-The app needs to know the zerotier-one authtoken.secret.  There are two options:
+The app needs to know the zerotier-one authtoken.secret.
 
-###### A: Allow access to /var/lib/zerotier-one/authtoken.secret
-The user running the ztncui app needs read access to authtoken.secret.  This can be achieved with:
-```shell
-sudo usermod -aG zerotier-one username
-sudo chmod g+r /var/lib/zerotier-one/authtoken.secret
-```
-Where:
-* username is the user running the ztncui app
-
-Note that you need to log out and in again to apply the new group membership.
-
-###### OR
-###### B: Make a .env file
+###### Make a .env file
 In the root of the ztncui directory, create a `.env` file with the content:
 ```
 ZT_TOKEN=########################
@@ -67,17 +55,19 @@ ZT_TOKEN=########################
 Where:
 * ######################## is the token string.
 
-You can also specify in the `.env` file a different address for the zerotier-one API (which defaults to localhost:9993):
+After all edits to the `.env file` (see other options below), make the `.env` readable by the user running ztncui only:
+```shell
+chmod 400 .env
+chown ztncui.ztncui .env
+```
+
+##### 4. Zerotier-one API port
+
+You can specify in the `.env` file a different address for the zerotier-one API (which defaults to localhost:9993):
 ```
 ZT_ADDR=localhost:9995
 ```
 
-Make `.env` readable by the user running ztncui only:
-```shell
-chmod 600 .env
-```
-
-The `.env` file should make it easier to run ztncui on a non-Linux platform.
 
 ##### 4. Run in production mode
 To run the server in production mode, add the following to the `.env` file (see 3B above):
