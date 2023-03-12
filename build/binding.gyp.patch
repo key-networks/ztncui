@@ -4,7 +4,7 @@
        ],
        "cflags+": ["-Wno-cast-function-type"],
        "include_dirs+": ["<!(node -e \"require('nan')\")"],
-+      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/8/libstdc++fs.a"],
++      "libraries": ["/usr/lib/gcc/x86_64-redhat-linux/4.8.2/32/libstdc++.a"],
        "dependencies": ["libargon2"],
        "configurations": {
          "Debug": {
