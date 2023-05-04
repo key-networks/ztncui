@@ -1,6 +1,6 @@
 FROM node:slim as base
 COPY src /app/src
-RUN apt update && apt install -yqq curl gnupg2 && curl install.zerotier.com | bash && cd /var/lib/zerotier-one/ && rm authtoken.secret planet  zerotier-one.pid  zerotier-one.port identity.secret identity.public
+RUN apt update && apt install -yqq curl gnupg2 && curl -s https://install.zerotier.com/ | bash && cd /var/lib/zerotier-one/ && rm authtoken.secret planet  zerotier-one.pid  zerotier-one.port identity.secret identity.public
 
 FROM base as dependencies
 WORKDIR /app/src
