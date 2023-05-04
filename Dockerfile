@@ -1,4 +1,4 @@
-FROM node:slim as base
+FROM docker.io/node:slim as base
 COPY src /app/src
 RUN apt update && apt install -yqq curl gnupg2 && curl -s https://install.zerotier.com/ | bash && cd /var/lib/zerotier-one/ && rm authtoken.secret planet  zerotier-one.pid  zerotier-one.port identity.secret identity.public
 
