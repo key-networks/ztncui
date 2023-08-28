@@ -17,15 +17,26 @@ async function get_network_with_members(nwid) {
     zt.network_detail(nwid),
     zt.peers(),
     zt.members(nwid)
-      .then(member_ids =>
-        Promise.all(
+      .then(member_ids => {
+        // Fix weird data returned by ZeroTier 1.12
+        if (Array.isArray(member_ids)) {
+          let obj = {};
+          for (let id of member_ids) {
+            let key = Object.keys(id)[0];
+            let value = Object.values(id)[0];
+            obj[key] = value;
+          }
+          member_ids = obj;
+        }
+
+        return Promise.all(
           Object.keys(member_ids)
             .map(id => Promise.all([
               zt.member_detail(nwid, id),
               storage.getItem(id)
             ]))
-        )
-      ).then(results => results.map(([member, name]) => {
+        );
+      }).then(results => results.map(([member, name]) => {
         member.name = name || '';
         return member;
       }))
