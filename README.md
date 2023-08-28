@@ -305,4 +305,5 @@ Problems with ztncui can be reported using the GitHub issue tracking system.  Pl
 The ztncui code is open source code, licensed under the GNU GPLv3, and is free to use on those terms. If you are interested in commercial licensing, please contact us via the contact form at [key-networks.com](https://key-networks.com) .
 
 ## Thanks
-@lideming for a rework and improvement of the network details page, adding DNS support, peer status/address/latency and other improvements.
+- @lideming for a rework and improvement of the network details page, adding DNS support, peer status/address/latency and other improvements.
+- @Koromix for a fix for incompatibility with ZeroTier 1.12.
